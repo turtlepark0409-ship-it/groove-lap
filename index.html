@@ -10,8 +10,9 @@
     --card-bg: #1f2128;
     --card-inner: #17181f;
     --accent-orange: #ff9f0a;
-    --accent-left: #ff453a;
-    --accent-right: #30d158;
+    --accent-left: #0a84ff;   /* 왼쪽: 파란색 */
+    --accent-right: #30d158;  /* 오른쪽: 초록색 */
+    --accent-miss: #ff453a;   /* 미스: 빨간색 */
     --text-primary: #f2f2f7;
     --text-muted: #8e8e93;
     --border-color: #2e303c;
@@ -55,7 +56,21 @@
     gap: 12px;
   }
 
-  /* 레벨 선택 탭 */
+  /* 상단 가이드 배너 */
+  .guide-banner {
+    background: rgba(10, 132, 255, 0.1);
+    border: 1px solid rgba(10, 132, 255, 0.25);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #a5cfff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+  }
+
+  /* 레벨 네비게이션 */
   .level-section { display: flex; flex-direction: column; gap: 4px; }
   .level-group-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
   .level-nav {
@@ -96,8 +111,32 @@
   }
   .title-wrap p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+  /* 기기 프리셋 버튼 */
+  .preset-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .btn-preset {
+    flex: 1;
+    background: var(--card-inner);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .btn-preset.active {
+    background: #232a3d;
+    color: var(--accent-left);
+    border-color: var(--accent-left);
+  }
+
   /* 컨트롤 바 */
-  .controls-bar { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; }
+  .controls-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .ctrl-card {
     background: var(--card-inner);
     border-radius: 14px;
@@ -122,7 +161,7 @@
   }
   input[type=range] {
     accent-color: var(--accent-orange);
-    width: 60px;
+    width: 55px;
     height: 4px;
     background: #383a46;
     border-radius: 2px;
@@ -173,13 +212,8 @@
     font-weight: 800;
   }
 
-  /* 모바일 양손 터치 패드 */
-  .pad-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    height: 150px;
-  }
+  /* 터치 패드 */
+  .pad-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 140px; }
   .touch-pad {
     position: relative;
     border-radius: 18px;
@@ -191,7 +225,7 @@
     align-items: center;
     cursor: pointer;
     overflow: hidden;
-    touch-action: none; /* 제스처 충돌 및 줌 방지 */
+    touch-action: none;
   }
   .touch-pad:active { transform: scale(0.97); }
   .touch-pad.left-pad { border-bottom: 4px solid var(--accent-left); }
@@ -202,7 +236,7 @@
   .touch-pad.right-pad .pad-label { color: var(--accent-right); }
   .ripple-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 
-  /* 메인 액션 버튼 */
+  /* 버튼 */
   .btn-main {
     background: var(--accent-orange);
     color: #000;
@@ -243,14 +277,34 @@
   }
   .result-rank { font-size: 40px; font-weight: 900; text-align: center; color: var(--accent-orange); }
   .result-sub { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  
+  /* 스마트 진단 박스 */
+  .diagnosis-box {
+    background: #232530;
+    border-left: 4px solid var(--accent-orange);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 10px 0 6px 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: #f2f2f7;
+    text-align: center;
+  }
+
+  /* 점도표 & 축 라벨 */
+  .daw-roll-wrap {
+    position: relative;
+    margin: 8px 0 12px 0;
+  }
   .daw-roll {
     width: 100%;
-    height: 65px;
+    height: 75px;
     background: #101115;
-    border-radius: 10px;
-    margin: 12px 0;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   .center-line {
     position: absolute;
@@ -258,14 +312,73 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.35);
   }
+  .axis-label {
+    position: absolute;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    pointer-events: none;
+  }
+  .axis-top { top: 4px; left: 8px; color: #ff9f0a; }
+  .axis-center { top: 50%; right: 8px; transform: translateY(-50%); color: rgba(255, 255, 255, 0.4); font-family: ui-monospace, monospace; }
+  .axis-bottom { bottom: 4px; left: 8px; color: #70a1ff; }
+
+  /* 범례 */
+  .legend-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+  /* 유튜브 채널 연결 배너 */
+  .promo-banner {
+    background: linear-gradient(135deg, #1f2538, #181a24);
+    border: 1px solid rgba(10, 132, 255, 0.35);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+  }
+  .promo-text h4 { font-size: 12px; font-weight: 800; color: #a5cfff; }
+  .promo-text p { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
+  .promo-badge { background: var(--accent-orange); color: #000; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px; }
+
   .result-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn-share {
+    grid-column: span 2;
+    background: #252836;
+    border: 1px solid var(--border-color);
+    color: #f2f2f7;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 
 <div class="device-frame">
+  <!-- 상단 가이드 배너 -->
+  <div class="guide-banner" id="guideBanner">
+    <span>💡</span>
+    <span id="guideText">기기 환경에 맞는 최적 싱크가 설정되었습니다.</span>
+  </div>
+
   <!-- 레벨 네비게이션 -->
   <div class="level-section">
     <div class="level-group-label">8비트 기초 코스</div>
@@ -293,6 +406,12 @@
     </div>
   </div>
 
+  <!-- 기기 모드 프리셋 -->
+  <div class="preset-bar">
+    <button class="btn-preset" id="presetMobile" onclick="applyPreset('mobile')">📱 폰 터치 모드 (0ms)</button>
+    <button class="btn-preset" id="presetPC" onclick="applyPreset('pc')">💻 PC 키보드 모드 (+60ms)</button>
+  </div>
+
   <!-- 컨트롤 바 -->
   <div class="controls-bar">
     <div class="ctrl-card">
@@ -304,10 +423,10 @@
       </div>
     </div>
     <div class="ctrl-card">
-      <div class="ctrl-label">SYNC <span id="syncDisplay">+80</span>ms</div>
+      <div class="ctrl-label">SYNC <span id="syncDisplay">0</span>ms</div>
       <div class="ctrl-btns">
         <button class="btn-step" onclick="changeSync(-5)">-5</button>
-        <input type="range" id="syncSlider" min="-30" max="140" value="80" oninput="setSync(this.value)">
+        <input type="range" id="syncSlider" min="-30" max="140" value="0" oninput="setSync(this.value)">
         <button class="btn-step" onclick="changeSync(5)">+5</button>
       </div>
     </div>
@@ -316,15 +435,15 @@
   <!-- 시퀀서 그리드 -->
   <div class="sequencer-card">
     <div class="sequencer-header">
-      <span id="sessionStatus">대기 중 (시작 버튼 또는 Space)</span>
+      <span id="sessionStatus">대기 중 (시작 버튼 또는 터치)</span>
       <span id="comboCounter">0 COMBO</span>
     </div>
     <div class="step-grid" id="stepGrid"></div>
   </div>
 
-  <div class="feedback-box" id="feedbackText">준비 완료</div>
+  <div class="feedback-box" id="feedbackText">준비 완료 (벨소리 모드 확인 🔔)</div>
 
-  <!-- 모바일 양손 터치 패드 -->
+  <!-- 터치 패드 -->
   <div class="pad-container">
     <div class="touch-pad left-pad" id="padL">
       <canvas class="ripple-canvas" id="canvasL"></canvas>
@@ -346,37 +465,62 @@
   <div class="result-modal" id="resultModal">
     <div class="result-rank" id="resultRank">S</div>
     <div class="result-sub" id="resultAcc">정확도 92.4% 완료</div>
-    <div class="daw-roll" id="dawRoll">
-      <div class="center-line"></div>
+
+    <div class="diagnosis-box" id="diagnosisText">
+      ✨ 아주 좋아요! 안정적인 그루브 포켓을 유지했습니다.
     </div>
+
+    <!-- 점도표 및 축 라벨 -->
+    <div class="daw-roll-wrap">
+      <div class="daw-roll" id="dawRoll">
+        <div class="axis-label axis-top">▲ 빠름 (Early)</div>
+        <div class="axis-label axis-center">0ms 정박</div>
+        <div class="axis-label axis-bottom">▼ 느림 (Late)</div>
+        <div class="center-line"></div>
+      </div>
+    </div>
+
+    <div class="legend-bar">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--accent-left)"></span> 왼손(L) 파랑</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--accent-right)"></span> 오른손(R) 초록</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--accent-miss)"></span> 미스(Miss) 빨강</div>
+    </div>
+
+    <!-- 사용자 지정 유튜브 채널 링크 적용 -->
+    <a class="promo-banner" href="https://www.youtube.com/channel/UCNBIdSyH9CbiKtIh8XkzIYg/" target="_blank">
+      <div class="promo-text">
+        <h4>🎹 박터틀의 음악노트 채널 가기</h4>
+        <p>16비트 독립성과 칼박 그루브 실전 팁 보러가기</p>
+      </div>
+      <div class="promo-badge">채널 방문 →</div>
+    </a>
+
     <div class="result-btn-group">
       <button class="btn-secondary" onclick="retryLevel()">🔄 다시 연습하기</button>
       <button class="btn-main" id="nextLevelBtn" onclick="nextLevel()">⏭️ 다음 레벨로</button>
+      <button class="btn-share" onclick="copyResultText()">📋 내 점수 클립보드 복사하기</button>
     </div>
   </div>
 </div>
 
 <script>
   const CURRICULUM = [
-    // 8비트 코스 (Lv.1~5)
-    { level: 1, title: "Lv.1 싱글 스트로크", badge: "8비트 기초", desc: "오른손(R)과 왼손(L)을 번갈아 가며 정박 유지", sub: 2, defaultSync: 80, pattern: ["R", "L", "R", "L", "R", "L", "R", "L"] },
-    { level: 2, title: "Lv.2 더블 스트로크", badge: "8비트 더블", desc: "양손을 2회씩 연속 타건 (R R L L R R L L)", sub: 2, defaultSync: 80, pattern: ["R", "R", "L", "L", "R", "R", "L", "L"] },
-    { level: 3, title: "Lv.3 파라디들 (L)", badge: "8비트 루디먼트", desc: "왼손 선행 기본 파라디들 (L R L L R L R R)", sub: 2, defaultSync: 80, pattern: ["L", "R", "L", "L", "R", "L", "R", "R"] },
-    { level: 4, title: "Lv.4 파라디들 (R)", badge: "8비트 루디먼트", desc: "오른손 선행 기본 파라디들 (R L R R L R L L)", sub: 2, defaultSync: 80, pattern: ["R", "L", "R", "R", "L", "R", "L", "L"] },
-    { level: 5, title: "Lv.5 인워드 파라디들", badge: "8비트 변형", desc: "고난도 당김음 패턴 (R L L R L L R L)", sub: 2, defaultSync: 80, pattern: ["R", "L", "L", "R", "L", "L", "R", "L"] },
-
-    // 16비트 코스 (Lv.6~10)
-    { level: 6, title: "Lv.6 16비트 싱글", badge: "16비트 실전", desc: "16분음표 2배속 싱글 스트로크 (RLRL RLRL...)", sub: 4, defaultSync: 80, pattern: ["R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L"] },
-    { level: 7, title: "Lv.7 16비트 더블", badge: "16비트 더블", desc: "16분음표 더블 핑거링 훈련 (RRLL RRLL...)", sub: 4, defaultSync: 80, pattern: ["R", "R", "L", "L", "R", "R", "L", "L", "R", "R", "L", "L", "R", "R", "L", "L"] },
-    { level: 8, title: "Lv.8 16비트 파라디들 (L)", badge: "16비트 펑크", desc: "16분음표 왼손 파라디들 (LRLL RLRR...)", sub: 4, defaultSync: 80, pattern: ["L", "R", "L", "L", "R", "L", "R", "R", "L", "R", "L", "L", "R", "L", "R", "R"] },
-    { level: 9, title: "Lv.9 16비트 파라디들 (R)", badge: "16비트 펑크", desc: "16분음표 오른손 파라디들 (RLRR RLL...)", sub: 4, defaultSync: 80, pattern: ["R", "L", "R", "R", "L", "R", "L", "L", "R", "L", "R", "R", "L", "R", "L", "L"] },
-    { level: 10, title: "Lv.10 16비트 인워드", badge: "펑크 마스터", desc: "16분음표 펑크 그루브 패턴 (RLLR LLRL...)", sub: 4, defaultSync: 80, pattern: ["R", "L", "L", "R", "L", "L", "R", "L", "R", "L", "L", "R", "L", "L", "R", "L"] }
+    { level: 1, title: "Lv.1 싱글 스트로크", badge: "8비트 기초", desc: "오른손(R)과 왼손(L)을 번갈아 가며 정박 유지", sub: 2, pattern: ["R", "L", "R", "L", "R", "L", "R", "L"] },
+    { level: 2, title: "Lv.2 더블 스트로크", badge: "8비트 더블", desc: "양손을 2회씩 연속 타건 (R R L L R R L L)", sub: 2, pattern: ["R", "R", "L", "L", "R", "R", "L", "L"] },
+    { level: 3, title: "Lv.3 파라디들 (L)", badge: "8비트 루디먼트", desc: "왼손 선행 기본 파라디들 (L R L L R L R R)", sub: 2, pattern: ["L", "R", "L", "L", "R", "L", "R", "R"] },
+    { level: 4, title: "Lv.4 파라디들 (R)", badge: "8비트 루디먼트", desc: "오른손 선행 기본 파라디들 (R L R R L R L L)", sub: 2, pattern: ["R", "L", "R", "R", "L", "R", "L", "L"] },
+    { level: 5, title: "Lv.5 인워드 파라디들", badge: "8비트 변형", desc: "고난도 당김음 패턴 (R L L R L L R L)", sub: 2, pattern: ["R", "L", "L", "R", "L", "L", "R", "L"] },
+    { level: 6, title: "Lv.6 16비트 싱글", badge: "16비트 실전", desc: "16분음표 2배속 싱글 스트로크 (RLRL RLRL...)", sub: 4, pattern: ["R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L", "R", "L"] },
+    { level: 7, title: "Lv.7 16비트 더블", badge: "16비트 더블", desc: "16분음표 더블 핑거링 훈련 (RRLL RRLL...)", sub: 4, pattern: ["R", "R", "L", "L", "R", "R", "L", "L", "R", "R", "L", "L", "R", "R", "L", "L"] },
+    { level: 8, title: "Lv.8 16비트 파라디들 (L)", badge: "16비트 펑크", desc: "16분음표 왼손 파라디들 (LRLL RLRR...)", sub: 4, pattern: ["L", "R", "L", "L", "R", "L", "R", "R", "L", "R", "L", "L", "R", "L", "R", "R"] },
+    { level: 9, title: "Lv.9 16비트 파라디들 (R)", badge: "16비트 펑크", desc: "16분음표 오른손 파라디들 (RLRR RLL...)", sub: 4, pattern: ["R", "L", "R", "R", "L", "R", "L", "L", "R", "L", "R", "R", "L", "R", "L", "L"] },
+    { level: 10, title: "Lv.10 16비트 인워드", badge: "펑크 마스터", desc: "16분음표 펑크 그루브 패턴 (RLLR LLRL...)", sub: 4, pattern: ["R", "L", "L", "R", "L", "L", "R", "L", "R", "L", "L", "R", "L", "L", "R", "L"] }
   ];
 
   let currentLevelIdx = 0;
   let audioCtx = null;
   let bpm = 70;
-  let latencyOffsetMs = 80; // 기본 싱크 +80ms 통일
+  let latencyOffsetMs = 0;
 
   let beatInterval = 60 / bpm;
   let noteInterval = beatInterval / 2;
@@ -393,34 +537,63 @@
   let currentCombo = 0;
   let maxCombo = 0;
 
-  // [핵심] iOS Safari Web Audio 강제 언락 파이프라인
-  function unlockAudioPipeline() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let lastAcc = 0;
+  let lastRank = "S";
+
+  function initDeviceConfig() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      applyPreset('mobile');
+    } else {
+      applyPreset('pc');
     }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    // 무음 버퍼를 재생하여 iOS 오디오 하드웨어 강제 기상
-    const buffer = audioCtx.createBuffer(1, 1, 22050);
-    const source = audioCtx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(audioCtx.destination);
-    source.start(0);
   }
+
+  function applyPreset(mode) {
+    document.getElementById('presetMobile').classList.toggle('active', mode === 'mobile');
+    document.getElementById('presetPC').classList.toggle('active', mode === 'pc');
+
+    if (mode === 'mobile') {
+      setSync(0);
+      document.getElementById('guideText').innerHTML = "📱 <b>모바일 팁:</b> 바닥에 두고 양손 <b>검지/중지</b>로 치면 16비트 정밀도가 대폭 상승합니다!";
+    } else {
+      setSync(60);
+      document.getElementById('guideText').innerHTML = "💻 <b>PC 팁:</b> 키보드 스위치 물리 깊이(Travel)를 감안해 기본 싱크(+60ms)가 적용되었습니다.";
+    }
+  }
+
+  function unlockAudioPipeline() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.001;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(0);
+      osc.stop(audioCtx.currentTime + 0.001);
+    } catch(e) {}
+  }
+
+  ['touchstart', 'touchend', 'click'].forEach(evt => {
+    window.addEventListener(evt, () => unlockAudioPipeline(), { once: true, passive: true });
+  });
 
   function playClick(time, isAccent) {
     if (!audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(isAccent ? 1200 : 650, time);
-    gain.gain.setValueAtTime(isAccent ? 0.9 : 0.6, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(time);
-    osc.stop(time + 0.045);
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(isAccent ? 1200 : 650, time);
+      gain.gain.setValueAtTime(isAccent ? 0.95 : 0.65, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + 0.045);
+    } catch(e) {}
   }
 
   function scheduler() {
@@ -443,7 +616,7 @@
           note.judged = true;
           note.offsetMs = 999;
           currentCombo = 0;
-          updateFeedback("MISS (놓침)", "#ff453a");
+          updateFeedback("MISS (놓침)", "var(--accent-miss)");
         }
       }
     });
@@ -473,7 +646,6 @@
     document.getElementById('levelTitle').innerHTML = `${data.title} <span class="badge" id="levelBadge">${data.badge}</span>`;
     document.getElementById('levelDesc').textContent = data.desc;
 
-    setSync(data.defaultSync);
     buildStepGrid();
     resetToMenu();
   }
@@ -517,16 +689,49 @@
     scheduler();
   }
 
+  function evaluatePerformance(validHits, acc) {
+    if (validHits.length < 10) return "연주 타수가 너무 적습니다. 끝까지 완주해보세요!";
+    
+    const meanOffset = validHits.reduce((a, b) => a + b.offsetMs, 0) / validHits.length;
+    
+    const half = Math.floor(validHits.length / 2);
+    const firstHalf = validHits.slice(0, half);
+    const secondHalf = validHits.slice(half);
+
+    const firstMean = firstHalf.reduce((a, b) => a + b.offsetMs, 0) / firstHalf.length;
+    const secondMean = secondHalf.reduce((a, b) => a + b.offsetMs, 0) / secondHalf.length;
+    const drift = secondMean - firstMean;
+
+    if (acc >= 95 && Math.abs(drift) < 18) {
+      return "🔥 대단해요! Perfect! (완벽한 마스터 그루브 포켓)";
+    }
+    if (drift < -20) {
+      return "⚡ 점점 빨라지네요! (호흡을 가다듬고 차분하게 템포를 유지해보세요)";
+    }
+    if (drift > 20) {
+      return "🐢 점점 느려지고 있어요! (후반부 손가락 긴장/텐션을 살짝 풀어보세요)";
+    }
+    if (meanOffset < -22) {
+      return "⏩ 전체적으로 빨라요! (메트로놈 클릭을 끝까지 듣고 타건해보세요)";
+    }
+    if (meanOffset > 22) {
+      return "⏸️ 전체적으로 느려요! (조금 더 과감하게 앞박을 잡아보세요)";
+    }
+    return "✨ 아주 좋아요! 안정적인 그루브 포켓을 유지했습니다.";
+  }
+
   function finishSession() {
     isRunning = false;
     document.getElementById('sessionStatus').textContent = "연습 완료";
 
     let perfect = 0, great = 0, earlyLate = 0, miss = 0;
     const totalSessionNotes = targetNotes.length;
+    const validHits = [];
 
     targetNotes.forEach(n => {
       if (!n.judged) { n.offsetMs = 999; miss++; }
       else if (n.hit) {
+        validHits.push(n);
         const abs = Math.abs(n.offsetMs);
         if (abs <= 45) perfect++;
         else if (abs <= 85) great++;
@@ -537,8 +742,14 @@
     const acc = ((perfect * 100 + great * 80 + earlyLate * 50) / (totalSessionNotes * 100)) * 100;
     const rank = acc >= 95 ? "SSS" : acc >= 90 ? "S" : acc >= 80 ? "A" : acc >= 70 ? "B" : "C";
 
+    lastAcc = acc;
+    lastRank = rank;
+
     document.getElementById('resultRank').textContent = rank;
     document.getElementById('resultAcc').innerHTML = `<b>평균 싱크율 ${acc.toFixed(1)}%</b> (${totalSessionNotes}타 완료 • 최대 ${maxCombo} COMBO)`;
+
+    const diagText = evaluatePerformance(validHits, acc);
+    document.getElementById('diagnosisText').textContent = diagText;
 
     const dawRoll = document.getElementById('dawRoll');
     dawRoll.querySelectorAll('.dot').forEach(d => d.remove());
@@ -550,14 +761,14 @@
       let y = 50;
 
       if (n.offsetMs >= 900) {
-        dot.style.background = '#ff453a';
+        dot.style.background = 'var(--accent-miss)';
       } else {
         const clamped = Math.max(-50, Math.min(50, n.offsetMs));
         y = 50 + (clamped / 50) * 40;
-        dot.style.background = n.hand === 'L' ? 'var(--accent-left)' : 'var(--accent-right)';
+        dot.style.background = (n.hand === 'L') ? 'var(--accent-left)' : 'var(--accent-right)';
       }
 
-      dot.style.cssText += `position:absolute; left:${x}%; top:${y}%; width:5px; height:5px; border-radius:50%; transform:translate(-50%, -50%);`;
+      dot.style.cssText += `position:absolute; left:${x}%; top:${y}%; width:5.5px; height:5.5px; border-radius:50%; transform:translate(-50%, -50%);`;
       dawRoll.appendChild(dot);
     });
 
@@ -579,13 +790,12 @@
   function resetToMenu() {
     document.getElementById('resultModal').style.display = 'none';
     document.getElementById('startBtn').style.display = 'flex';
-    document.getElementById('sessionStatus').textContent = "대기 중 (시작 버튼 또는 Space)";
+    document.getElementById('sessionStatus').textContent = "대기 중 (시작 버튼 또는 터치)";
     document.getElementById('feedbackText').textContent = "준비 완료";
     document.getElementById('feedbackText').style.color = "var(--text-primary)";
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
-  // 타건 판정
   function handleInput(hand, clientX, clientY) {
     createRipple(hand, clientX, clientY);
 
@@ -614,7 +824,7 @@
 
     if (!closest) {
       if (compensatedCurrent >= playStartTime - standardHitWindow) {
-        updateFeedback("MISS (박자 이탈)", "#ff453a");
+        updateFeedback("MISS (박자 이탈)", "var(--accent-miss)");
         currentCombo = 0;
       }
       return;
@@ -625,7 +835,7 @@
     if (closest.hand !== hand) {
       closest.offsetMs = 999;
       currentCombo = 0;
-      updateFeedback("WRONG HAND!", "#ff453a");
+      updateFeedback("WRONG HAND!", "var(--accent-miss)");
       return;
     }
 
@@ -638,13 +848,13 @@
 
     if (absMs <= 45) {
       currentCombo++;
-      updateFeedback(`PERFECT (${syncPercent}% 싱크)`, "#30d158");
+      updateFeedback(`PERFECT (${syncPercent}% 싱크)`, "var(--accent-right)");
     } else if (absMs <= 85) {
       currentCombo++;
-      updateFeedback(`GREAT (${syncPercent}% 싱크)`, "#70a1ff");
+      updateFeedback(`GREAT (${syncPercent}% 싱크)`, "var(--accent-left)");
     } else {
       const tag = diffMs < 0 ? "EARLY" : "LATE";
-      updateFeedback(`${tag} (${syncPercent}% 싱크)`, "#ff9f0a");
+      updateFeedback(`${tag} (${syncPercent}% 싱크)`, "var(--accent-orange)");
       currentCombo = 0;
     }
 
@@ -679,13 +889,18 @@
     }
   }
 
-  // --- 모바일 터치 이벤트 바인딩 (멀티터치 지원) ---
   const padL = document.getElementById('padL');
   const padR = document.getElementById('padR');
 
   function bindPadEvents(pad, hand) {
-    pad.addEventListener('pointerdown', (e) => {
+    pad.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      unlockAudioPipeline();
+      const touch = e.changedTouches[0];
+      handleInput(hand, touch.clientX, touch.clientY);
+    }, { passive: false });
+
+    pad.addEventListener('mousedown', (e) => {
       unlockAudioPipeline();
       handleInput(hand, e.clientX, e.clientY);
     });
@@ -693,7 +908,6 @@
   bindPadEvents(padL, 'L');
   bindPadEvents(padR, 'R');
 
-  // 물결 애니메이션
   const ripplesL = [];
   const ripplesR = [];
 
@@ -712,6 +926,7 @@
   }
   window.addEventListener('load', () => {
     setupCanvases();
+    initDeviceConfig();
     buildStepGrid();
     animateRipples();
   });
@@ -724,7 +939,8 @@
     const y = ((clientY || (rect.top + rect.height / 2)) - rect.top) * window.devicePixelRatio;
 
     const list = (hand === 'L') ? ripplesL : ripplesR;
-    list.push({ x, y, r: 5, alpha: 0.8, color: hand === 'L' ? '255, 69, 58' : '48, 209, 88' });
+    const color = (hand === 'L') ? '10, 132, 255' : '48, 209, 88';
+    list.push({ x, y, r: 5, alpha: 0.8, color: color });
   }
 
   function animateRipples() {
@@ -782,15 +998,25 @@
     document.getElementById('syncDisplay').textContent = (val > 0 ? "+" : "") + val;
   }
 
+  function copyResultText() {
+    const text = `[Groove Lab] ${CURRICULUM[currentLevelIdx].title}\n🏆 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)\n최대 콤보: ${maxCombo} COMBO\n지금 측정해보기 👉 ${window.location.href}`;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("결과가 클립보드에 복사되었습니다! SNS나 커뮤니티에 공유해보세요.");
+    });
+  }
+
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
       e.preventDefault();
+      unlockAudioPipeline();
       if (!isRunning) toggleSession();
     }
     if (['KeyA', 'KeyS', 'KeyD', 'ArrowLeft'].includes(e.code)) {
+      unlockAudioPipeline();
       handleInput('L');
     }
     if (['KeyJ', 'KeyK', 'KeyL', 'ArrowRight'].includes(e.code)) {
+      unlockAudioPipeline();
       handleInput('R');
     }
   });
