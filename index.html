@@ -57,7 +57,6 @@
     gap: 10px;
   }
 
-  /* 0ms 즉시 피크 도달 비트 플래시 애니메이션 */
   @keyframes flash-normal {
     0% {
       border-color: rgba(255, 215, 0, 0.95);
@@ -80,7 +79,7 @@
     }
   }
 
-  /* 상단 지연 안내 배너 */
+  /* 상단 동적 팁 배너 */
   .guide-banner {
     background: rgba(255, 159, 10, 0.08);
     border: 1px solid rgba(255, 159, 10, 0.25);
@@ -92,16 +91,16 @@
     align-items: center;
     gap: 6px;
     line-height: 1.4;
+    min-height: 36px;
+    transition: opacity 0.2s ease;
   }
 
-  /* 챕터 & 레벨 네비게이션 */
   .level-section { display: flex; flex-direction: column; gap: 6px; }
   .section-header { display: flex; justify-content: space-between; align-items: center; }
   .level-group-label { font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; }
   .stars-total-badge { color: var(--gold); font-size: 12px; font-weight: 800; }
   .reset-link { color: var(--text-muted); font-size: 10px; text-decoration: underline; cursor: pointer; }
 
-  /* 챕터 탭 */
   .chapter-nav {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -126,7 +125,6 @@
     color: var(--accent-orange);
   }
 
-  /* 레벨 서브 탭 */
   .level-nav {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -162,7 +160,6 @@
   .tab-stars { font-size: 8px; line-height: 8px; color: var(--gold); }
   .level-tab.active .tab-stars { color: #000; }
 
-  /* 헤더 */
   .header { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
   .title-wrap h1 { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
   .badge {
@@ -175,7 +172,6 @@
   }
   .title-wrap p { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
 
-  /* 컨트롤 바 */
   .controls-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .ctrl-card {
     background: var(--card-inner);
@@ -209,7 +205,6 @@
     margin-left: 4px;
   }
 
-  /* 모범연주 버튼 */
   .btn-demo-card {
     background: var(--card-inner);
     border: 1px solid var(--border-color);
@@ -233,7 +228,6 @@
     color: var(--accent-orange);
   }
 
-  /* 시퀀서 그리드 */
   .sequencer-card {
     background: var(--card-inner);
     border-radius: 14px;
@@ -250,21 +244,36 @@
   .step-grid {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    gap: 3px;
+    gap: 4px;
   }
   .step-node {
     background: #242630;
     border-radius: 8px;
-    padding: 7px 0;
+    padding: 8px 0;
     text-align: center;
     border: 1.5px solid transparent;
     transition: transform 0.05s, background 0.08s;
   }
   .step-node .note-hand { font-size: 13px; font-weight: 800; }
-  .step-node .note-sub { font-size: 8.5px; color: var(--text-muted); margin-top: 1px; }
+  .step-node .note-sub { font-size: 8.5px; color: var(--text-muted); margin-top: 2px; }
   .step-node.hand-R { color: var(--accent-right); }
   .step-node.hand-L { color: var(--accent-left); }
   .step-node.hand-rest { color: #444857; }
+
+  .step-node.is-long {
+    background: #332512;
+    border: 1.5px solid var(--accent-orange);
+    color: #ffc266;
+    box-shadow: 0 0 10px rgba(255, 159, 10, 0.25);
+  }
+  .step-node.is-long .note-hand {
+    color: #ffc266;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+
   .step-node.active {
     background: #313543;
     transform: translateY(-2px);
@@ -272,6 +281,12 @@
   .step-node.active.hand-R { border-color: var(--accent-right); }
   .step-node.active.hand-L { border-color: var(--accent-left); }
   .step-node.active.hand-rest { border-color: #555c70; }
+  .step-node.active.is-long {
+    background: var(--accent-orange);
+    color: #000;
+    box-shadow: 0 0 16px rgba(255, 159, 10, 0.6);
+  }
+  .step-node.active.is-long .note-hand { color: #000; }
 
   .feedback-box {
     text-align: center;
@@ -280,7 +295,6 @@
     font-weight: 800;
   }
 
-  /* 터치 패드 */
   .pad-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 125px; }
   .touch-pad {
     position: relative;
@@ -304,7 +318,6 @@
   .touch-pad.right-pad .pad-label { color: var(--accent-right); }
   .ripple-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 
-  /* 메인 버튼 */
   .btn-main {
     background: var(--accent-orange);
     color: #000;
@@ -334,7 +347,6 @@
     touch-action: manipulation;
   }
 
-  /* 결과 모달 */
   .result-modal {
     display: none;
     background: var(--card-inner);
@@ -360,7 +372,6 @@
     text-align: center;
   }
 
-  /* 점도표 */
   .daw-roll-wrap { position: relative; margin: 6px 0 10px 0; }
   .daw-roll {
     width: 100%;
@@ -400,7 +411,6 @@
   .legend-item { display: flex; align-items: center; gap: 3px; }
   .legend-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
 
-  /* 프로모션 배너 */
   .promo-banner {
     background: linear-gradient(135deg, #1f2538, #181a24);
     border: 1px solid rgba(10, 132, 255, 0.35);
@@ -419,29 +429,30 @@
   .promo-badge { background: var(--accent-orange); color: #000; font-size: 9.5px; font-weight: 800; padding: 3px 6px; border-radius: 6px; }
 
   .result-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .btn-share {
+  .btn-share-card {
     grid-column: span 2;
-    background: #252836;
-    border: 1px solid var(--border-color);
-    color: #f2f2f7;
+    background: linear-gradient(135deg, #ff9f0a, #ff7b00);
+    color: #000;
+    border: none;
     border-radius: 12px;
-    padding: 8px;
-    font-size: 11.5px;
-    font-weight: 700;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 800;
     cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255, 159, 10, 0.35);
+    touch-action: manipulation;
   }
+  .btn-share-card:active { transform: scale(0.98); opacity: 0.9; }
 </style>
 </head>
 <body>
 
 <div class="device-frame" id="mainDeviceFrame">
-  <!-- 상단 지연 안내 배너 -->
-  <div class="guide-banner">
-    <span>⚠️</span>
-    <span>무선 이어폰/키보드에서는 지연이 발생할 수 있어요! (유선 권장)</span>
+  <div class="guide-banner" id="guideBanner">
+    <span id="tipIcon">⚠️</span>
+    <span id="tipText">무선 이어폰/키보드는 소리 지연이 있어요! (유선 이어폰 또는 스피커 권장)</span>
   </div>
 
-  <!-- 30단계 챕터 & 레벨 네비게이션 -->
   <div class="level-section">
     <div class="section-header">
       <span class="level-group-label" id="chapterTitleLabel">Chapter 1. 8비트 기초 스트로크</span>
@@ -451,7 +462,6 @@
       </div>
     </div>
 
-    <!-- 챕터 선택 바 (6개) -->
     <div class="chapter-nav">
       <button class="chapter-tab active" onclick="switchChapter(0)">Ch.1</button>
       <button class="chapter-tab" onclick="switchChapter(1)">Ch.2</button>
@@ -461,18 +471,16 @@
       <button class="chapter-tab" onclick="switchChapter(5)">Ch.6</button>
     </div>
 
-    <!-- 해당 챕터의 5개 레벨 탭 -->
     <div class="level-nav" id="levelNavContainer"></div>
   </div>
 
   <div class="header">
     <div class="title-wrap">
-      <h1 id="levelTitle">Lv.1 싱글 스트로크 <span class="badge" id="levelBadge">8비트 기초</span></h1>
+      <h1 id="levelTitle">Lv.1 싱글 스트로크 <span class="badge" id="levelBadge">8비트</span></h1>
       <p id="levelDesc">오른손과 왼손을 번갈아 가며 정박 유지</p>
     </div>
   </div>
 
-  <!-- 컨트롤 바 (템포 조절 & 모범연주 탭) -->
   <div class="controls-bar">
     <div class="ctrl-card">
       <div class="ctrl-label">
@@ -486,13 +494,11 @@
       </div>
     </div>
     
-    <!-- 모범연주 들어보기 버튼 -->
     <button class="btn-demo-card" id="demoPlayBtn" onclick="toggleDemoPlay()">
       <span id="demoIcon">▶</span> <span id="demoText">모범연주 듣기</span>
     </button>
   </div>
 
-  <!-- 시퀀서 그리드 -->
   <div class="sequencer-card">
     <div class="sequencer-header">
       <span id="sessionStatus">대기 중 (시작 버튼 클릭)</span>
@@ -501,19 +507,18 @@
     <div class="step-grid" id="stepGrid"></div>
   </div>
 
-  <div class="feedback-box" id="feedbackText">준비 완료 (벨소리 모드 확인 🔔)</div>
+  <div class="feedback-box" id="feedbackText">준비 완료 (마스터건반 ~G2:L / G#2~:R)</div>
 
-  <!-- 터치 패드 -->
   <div class="pad-container">
     <div class="touch-pad left-pad" id="padL">
       <canvas class="ripple-canvas" id="canvasL"></canvas>
       <div class="pad-label">L</div>
-      <div class="pad-sub">[A, S, D, ←]</div>
+      <div class="pad-sub">[A, S, D, ←, ~G2]</div>
     </div>
     <div class="touch-pad right-pad" id="padR">
       <canvas class="ripple-canvas" id="canvasR"></canvas>
       <div class="pad-label">R</div>
-      <div class="pad-sub">[J, K, L, →]</div>
+      <div class="pad-sub">[J, K, L, →, G#2~]</div>
     </div>
   </div>
 
@@ -521,7 +526,6 @@
     🚀 4마디 테스트 시작 (Touch / Space)
   </button>
 
-  <!-- 결과 모달 -->
   <div class="result-modal" id="resultModal">
     <div class="result-header">
       <div class="result-rank" id="resultRank">SSS</div>
@@ -533,7 +537,6 @@
       🔥 대단해요! Perfect! (완벽한 마스터 그루브 포켓)
     </div>
 
-    <!-- 점도표 (DAW 롤) -->
     <div class="daw-roll-wrap">
       <div class="daw-roll" id="dawRoll">
         <div class="axis-label axis-top">▲ 빠름 (Early)</div>
@@ -549,7 +552,6 @@
       <div class="legend-item"><span class="legend-dot" style="background:var(--accent-miss)"></span> 미스(Miss) 빨강</div>
     </div>
 
-    <!-- 자체 강의 퍼널 배너 -->
     <a class="promo-banner" href="https://www.youtube.com/@parkturtle" target="_blank">
       <div class="promo-text">
         <h4>🎹 박터틀의 펑크 & 재즈 테크닉</h4>
@@ -561,65 +563,151 @@
     <div class="result-btn-group">
       <button class="btn-secondary" onclick="retryLevel()">🔄 다시 연습하기</button>
       <button class="btn-main" id="nextLevelBtn" onclick="nextLevel()">⏭️ 다음 레벨로</button>
-      <button class="btn-share" onclick="copyResultText()">📋 내 점수 클립보드 복사하기</button>
+      <button class="btn-share-card" onclick="shareResultCard()">📸 이미지로 저장하기</button>
     </div>
   </div>
 </div>
 
 <script>
-  // 30단계 전체 커리큘럼 데이터
+  const TIPS = [
+    { icon: "⚠️", text: "무선 이어폰/키보드는 소리 지연이 있어요! (유선 이어폰 또는 스피커 권장)" },
+    { icon: "💡", text: "어려우면 ◀ 버튼을 눌러 속도를 0.8x로 줄여서 연습해보세요!" },
+    { icon: "⭐", text: "A등급(싱크율 80% 이상)을 획득해야 다음 레벨이 열립니다!" },
+    { icon: "🎹", text: "마스터 건반 분할 지원 (~G2: 왼손 베이스 / G#2~: 오른손 화음 쨉)" }
+  ];
+  let tipIdx = 0;
+
+  function rotateTip() {
+    const banner = document.getElementById('guideBanner');
+    if (!banner) return;
+    tipIdx = (tipIdx + 1) % TIPS.length;
+    banner.style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('tipIcon').textContent = TIPS[tipIdx].icon;
+      document.getElementById('tipText').textContent = TIPS[tipIdx].text;
+      banner.style.opacity = '1';
+    }, 200);
+  }
+  setInterval(rotateTip, 6500);
+
   const CHAPTERS = [
     "Chapter 1. 8비트 기초 스트로크",
-    "Chapter 2. 16비트 4대 파라디들",
-    "Chapter 3. 길이와 여백 (Short & Long)",
-    "Chapter 4. 싱코페이션 & 악센트",
-    "Chapter 5. 실전 컴핑 & 블루스",
-    "Chapter 6. 마스터 & 극한 챌린지"
+    "Chapter 2. 16비트 루디먼트",
+    "Chapter 3. 클라베 & 베이스 리듬",
+    "Chapter 4. 롱노트 & 여백",
+    "Chapter 5. 싱코페이션 & 쨉",
+    "Chapter 6. 종합 마스터"
   ];
 
   const CURRICULUM = [
-    // Chapter 1 (Lv 1~5)
-    { level: 1, title: "Lv.1 싱글 스트로크", badge: "8비트 기초", desc: "오른손과 왼손을 번갈아 가며 정박 유지", baseBpm: 70, pattern: ["R","L","R","L","R","L","R","L"] },
-    { level: 2, title: "Lv.2 더블 스트로크", badge: "8비트 더블", desc: "양손을 2회씩 연속 타건 (RRLL RRLL)", baseBpm: 73, pattern: ["R","R","L","L","R","R","L","L"] },
-    { level: 3, title: "Lv.3 파라디들 (R)", badge: "8비트 루디먼트", desc: "기본 정방향 파라디들 (RLRR LRLL)", baseBpm: 77, pattern: ["R","L","R","R","L","R","L","L"] },
-    { level: 4, title: "Lv.4 역파라디들", badge: "8비트 변형", desc: "안쪽으로 말려 들어가는 패턴 (RLLR LRRL)", baseBpm: 81, pattern: ["R","L","L","R","L","R","R","L"] },
-    { level: 5, title: "Lv.5 인워드 파라디들", badge: "8비트 마스터", desc: "고난도 당김음 패턴 (RLLR LLRL)", baseBpm: 85, pattern: ["R","L","L","R","L","L","R","L"] },
+    // Chapter 1 (Lv 1~5: 8비트 8스텝 단일 라인)
+    { level: 1, title: "Lv.1 싱글 스트로크", badge: "8비트", desc: "오른손과 왼손을 번갈아 가며 정박 유지", baseBpm: 70, pattern: "RLRLRLRL" },
+    { level: 2, title: "Lv.2 더블 스트로크", badge: "8비트", desc: "양손을 2회씩 연속 타건 (RRLL RRLL)", baseBpm: 73, pattern: "RRLLRRLL" },
+    { level: 3, title: "Lv.3 기본 파라디들", badge: "8비트", desc: "기본 정방향 파라디들 (RLRR LRLL)", baseBpm: 77, pattern: "RLRRLRLL" },
+    { level: 4, title: "Lv.4 리버스 파라디들", badge: "8비트", desc: "앞쪽 더블로 치고 나가는 역파라 (RRLR LLRL)", baseBpm: 81, pattern: "RRLRLLRL" },
+    { level: 5, title: "Lv.5 인워드 파라디들", badge: "8비트", desc: "안쪽으로 말려 들어가는 펑크 인워드 (RLLR LRRL)", baseBpm: 85, pattern: "RLLRLRRL" },
 
-    // Chapter 2 (Lv 6~10)
-    { level: 6, title: "Lv.6 16비트 싱글", badge: "16비트 실전", desc: "16분음표 2배속 싱글 스트로크 (RLRL...)", baseBpm: 65, pattern: ["R","L","R","L","R","L","R","L","R","L","R","L","R","L","R","L"] },
-    { level: 7, title: "Lv.7 16비트 더블", badge: "16비트 더블", desc: "16분음표 더블 핑거링 훈련 (RRLL...)", baseBpm: 69, pattern: ["R","R","L","L","R","R","L","L","R","R","L","L","R","R","L","L"] },
-    { level: 8, title: "Lv.8 16비트 정파라", badge: "16비트 펑크", desc: "16분음표 정방향 파라디들 (RLRR LRLL...)", baseBpm: 73, pattern: ["R","L","R","R","L","R","L","L","R","L","R","R","L","R","L","L"] },
-    { level: 9, title: "Lv.9 16비트 인워드", badge: "펑크 그루브", desc: "16분음표 펑크 인워드 (RLLR LRRL...)", baseBpm: 76, pattern: ["R","L","L","R","L","R","R","L","R","L","L","R","L","R","R","L"] },
-    { level: 10, title: "Lv.10 딜레이드 파라", badge: "뇌 분리 완성", desc: "4번째 박에 더블이 걸리는 변칙 루디먼트", baseBpm: 80, pattern: ["R","L","R","L","L","R","L","R","R","L","R","L","L","R","L","R"] },
+    // Chapter 2 (Lv 6~10: 16비트 8x2 두 줄 라인)
+    { level: 6, title: "Lv.6 16비트 싱글", badge: "16비트", desc: "16분음표 2배속 싱글 스트로크 (RLRL...)", baseBpm: 65, pattern: "RLRLRLRLRLRLRLRL" },
+    { level: 7, title: "Lv.7 16비트 더블", badge: "16비트", desc: "16분음표 더블 핑거링 탄성 훈련 (RRLL...)", baseBpm: 69, pattern: "RRLLRRLLRRLLRRLL" },
+    { level: 8, title: "Lv.8 16비트 기본 파라", badge: "16비트", desc: "16분음표 정방향 파라디들 (RLRR LRLL...)", baseBpm: 73, pattern: "RLRRLRLLRLRRLRLL" },
+    { level: 9, title: "Lv.9 16비트 리버스", badge: "16비트", desc: "16분음표 리버스 파라디들 (RRLR LLRL...)", baseBpm: 76, pattern: "RRLRLLRLRRLRLLRL" },
+    { level: 10, title: "Lv.10 16비트 인워드", badge: "16비트", desc: "16분음표 펑크 인워드 (RLLR LRRL...)", baseBpm: 80, pattern: "RLLRLRRLRLLRLRRL" },
 
-    // Chapter 3 (Lv 11~15)
-    { level: 11, title: "Lv.11 8비트 스타카토 쨉", badge: "여백의 미", desc: "16분음표로 짧게 끊고 3칸 비우기", baseBpm: 75, pattern: ["R","-","-","-","L","-","-","-","R","-","-","-","L","-","-","-"] },
-    { level: 12, title: "Lv.12 16분 뒷박 쨉", badge: "엇박 찌르기", desc: "정박을 비우고 16분 안쪽 엇박만 타격", baseBpm: 78, pattern: ["-","R","-","L","-","R","-","L","-","R","-","L","-","R","-","L"] },
-    { level: 13, title: "Lv.13 롱-숏 대비", badge: "아티큘레이션", desc: "지속음 뒤에 곧바로 이어지는 16분 쨉", baseBpm: 82, pattern: ["R","-","-","-","R","-","L","-","R","-","-","-","R","-","L","-"] },
-    { level: 14, title: "Lv.14 고스트 탭", badge: "고스트 터치", desc: "비어있는 여백 사이를 뚫고 나오는 타건", baseBpm: 86, pattern: ["R","L","-","R","L","-","R","L","-","R","L","-","R","L","-","R"] },
-    { level: 15, title: "Lv.15 4박자 비우기", badge: "내면 시계", desc: "2박을 완전히 쉰 뒤 칼박으로 진입", baseBpm: 90, pattern: ["R","L","R","L","-","-","-","-","R","L","R","L","-","-","-","-"] },
+    // Chapter 3 (Lv 11~15: 클라베 & 베이스 리듬)
+    { level: 11, title: "Lv.11 더블 드라이브", badge: "클라베", desc: "RLLR LLRL 반복으로 추진력을 만드는 드라이브 리듬", baseBpm: 75, pattern: "RLLRLLRLRLLRLLRL" },
+    { level: 12, title: "Lv.12 왼손 엇박 리드", badge: "베이스", desc: "왼손 엇박으로 시작하여 말려 들어가는 훵크 패턴", baseBpm: 78, pattern: "L-R-LRLLRLLRLLRL" },
+    { level: 13, title: "Lv.13 마디 넘김 쨉", badge: "인터락", desc: "후반부 LLR- 엇박으로 마디를 넘겨주는 인터락", baseBpm: 82, pattern: "RLLRLLRLLLR-LRLL" },
+    { level: 14, title: "Lv.14 양손 크로스", badge: "뇌 분리", desc: "인워드와 리버스가 교차하는 뇌 분리 완성 패턴", baseBpm: 86, pattern: "LRRLRLLRRLLRLLRL" },
+    { level: 15, title: "Lv.15 3-3-2 클라베", badge: "정통 클라베", desc: "R-RL 3-3-2 악센트와 16비트 쨉의 정수", baseBpm: 90, pattern: "R-RLR-RLR-LR-LR-" },
 
-    // Chapter 4 (Lv 16~20)
-    { level: 16, title: "Lv.16 3-3-2 클라베", badge: "라틴 & 펑크", desc: "펑크의 근본 3-3-2 분할 리듬 찌르기", baseBpm: 80, pattern: ["R","-","-","R","-","-","R","-","-","-","R","-","-","-","R","-"] },
-    { level: 17, title: "Lv.17 안티시페이션", badge: "마디 넘기기", desc: "4마디 끝 16분 4번째 박 당김음 푸시", baseBpm: 84, pattern: ["R","-","-","-","-","-","R","-","-","-","-","-","-","-","-","L"] },
-    { level: 18, title: "Lv.18 오프비트 인터락", badge: "양손 얽힘", desc: "왼손과 오른손이 엇박으로 얽히는 그루브", baseBpm: 88, pattern: ["-","R","-","L","R","-","L","-","-","R","-","L","R","-","L","-"] },
-    { level: 19, title: "Lv.19 백비트 악센트", badge: "스네어 백비트", desc: "2·4박 백비트 타이밍에 오른손 강타", baseBpm: 91, pattern: ["L","-","R","L","L","-","R","-","L","-","R","L","L","-","R","-"] },
-    { level: 20, title: "Lv.20 크로스 바운더리", badge: "마디 파괴", desc: "마디 경계를 무너뜨리는 3-3-3-3-4 리듬", baseBpm: 95, pattern: ["R","-","-","L","-","-","R","-","-","L","-","-","R","L","R","L"] },
+    // Chapter 4 (Lv 16~20: 롱노트 & 여백)
+    { level: 16, title: "Lv.16 베이스 쿵 쨉", badge: "2칸 서스테인", desc: "(LL) 롱노트 베이스 뒤에 꽂아 넣는 16분 쨉", baseBpm: 75, pattern: "(LL)L-RRLR--L-(LL)L-" },
+    { level: 17, title: "Lv.17 3칸 길게 누르기", badge: "3칸 롱노트", desc: "(LLL) 베이스와 (RRR) 오른손 화음 홀드 교차", baseBpm: 78, pattern: "(LLL)RLRL-L(RRR)LRLL" },
+    { level: 18, title: "Lv.18 엇박 버티기", badge: "오프비트 홀드", desc: "첫 2칸을 비우고 엇박에 들어가는 끈적한 롱노트", baseBpm: 82, pattern: "--(LL)LRLL(RR)LR-LR-" },
+    { level: 19, title: "Lv.19 양손 홀드", badge: "더블 홀드", desc: "여백 뒤에 터지는 왼손 롱노트와 오른손 더블 쨉", baseBpm: 86, pattern: "--(LL)-L--(LL)RRLRRL" },
+    { level: 20, title: "Lv.20 롱숏 마스터", badge: "아티큘레이션", desc: "3칸 화음 쨉과 2칸 베이스가 맞물리는 실전 펑크", baseBpm: 90, pattern: "(RRR)LR-LR-(RR)LRRL-" },
 
-    // Chapter 5 (Lv 21~25)
-    { level: 21, title: "Lv.21 원코드 컴핑 A", badge: "E9 그루브", desc: "제임스 브라운 스타일 16비트 건반 쨉", baseBpm: 85, pattern: ["R","-","L","R","-","L","-","R","-","-","L","R","-","L","-","-"] },
-    { level: 22, title: "Lv.22 원코드 컴핑 B", badge: "타이트 포켓", desc: "왼손 베이스 릴리즈와 오른손 화음 쨉", baseBpm: 89, pattern: ["R","L","-","R","L","-","R","-","-","R","L","-","R","-","L","-"] },
-    { level: 23, title: "Lv.23 블루스 턴어라운드", badge: "블루스 펑크", desc: "12마디 블루스 코드 전환 리듬 루틴", baseBpm: 93, pattern: ["R","-","-","L","-","R","-","-","L","-","R","-","L","-","R","-"] },
-    { level: 24, title: "Lv.24 더블 스톱 악센트", badge: "어택 강화", desc: "양손 분리 타건 밸런스 실전 컴핑", baseBpm: 96, pattern: ["L","-","R","-","L","-","R","-","L","-","R","-","L","-","R","-"] },
-    { level: 25, title: "Lv.25 마이너 펜타 필", badge: "실전 필인", desc: "4마디 루프 끝에 꽂아 넣는 1박자 필인", baseBpm: 100, pattern: ["-","R","L","-","R","L","-","R","-","L","-","R","-","L","-","-"] },
+    // Chapter 5 (Lv 21~25: 싱코페이션 & 쨉)
+    { level: 21, title: "Lv.21 16비트 커팅", badge: "싱코페이션", desc: "1번 박 베이스 후 엇박 쨉을 쪼개는 커팅 리듬", baseBpm: 85, pattern: "LR-R-R-R-R-R-RLR" },
+    { level: 22, title: "Lv.22 롱노트 & 스프린트", badge: "스프린트", desc: "베이스 홀드 후 4박에서 터지는 16비트 런", baseBpm: 89, pattern: "R(LL)R-RLR-RLLRLRL" },
+    { level: 23, title: "Lv.23 치고 빠지기", badge: "텐션 조절", desc: "16비트 연타와 엇박 쨉이 쉴 새 없이 교차하는 훈련", baseBpm: 93, pattern: "RLRL-R-R-RL-RLRL" },
+    { level: 24, title: "Lv.24 무한 롤링", badge: "노 브레이크", desc: "쉼표 없이 인워드와 리버스가 몰아치는 피지컬 훈련", baseBpm: 96, pattern: "RLLRLLRLLRLLRLRL" },
+    { level: 25, title: "Lv.25 화음 홀드 피니시", badge: "싱코페이션 마스터", desc: "오른손 롱노트 홀드와 인워드 피니시 결합", baseBpm: 100, pattern: "L(RR)L-R-R-LR-RLLR" },
 
-    // Chapter 6 (Lv 26~30)
-    { level: 26, title: "Lv.26 James Brown", badge: "보스: 소울", desc: "전설적인 16비트 훵크 기타 커팅 리듬", baseBpm: 92, pattern: ["R","-","L","R","-","L","-","R","-","-","L","R","-","L","-","-"] },
-    { level: 27, title: "Lv.27 Tower of Power", badge: "보스: 오클랜드", desc: "타워 오브 파워 스타일 헤비 펑크", baseBpm: 98, pattern: ["R","L","-","R","L","-","R","-","-","R","L","-","R","-","L","-"] },
-    { level: 28, title: "Lv.28 Chameleon", badge: "보스: 퓨전", desc: "허비 행콕 베이스 & 화음 쨉 인터락", baseBpm: 104, pattern: ["L","-","-","-","-","R","-","L","-","-","L","-","-","R","-","-"] },
-    { level: 29, title: "Lv.29 40 BPM 선(禪)", badge: "극한: 저속", desc: "극저속 40 BPM! 내면 시계 극한 시험", baseBpm: 40, pattern: ["R","L","R","R","L","R","L","L","R","L","R","R","L","R","L","L"] },
-    { level: 30, title: "Lv.30 115 BPM 마스터", badge: "최종 보스", desc: "초고속 115 BPM 펑크 파라디들 마스터", baseBpm: 115, pattern: ["R","L","L","R","L","L","R","L","R","L","L","R","L","L","R","L"] }
+    // Chapter 6 (Lv 26~30: 종합 마스터)
+    { level: 26, title: "Lv.26 원코드 컴핑", badge: "소울 컴핑", desc: "1박 롱노트 베이스와 2·4박 백비트 쨉의 정석", baseBpm: 88, pattern: "(LL)L--R-R-R-LR-RL" },
+    { level: 27, title: "Lv.27 톱니바퀴 그루브", badge: "오스티나토", desc: "왼손 리프와 오른손 화음이 맞물리는 인터락", baseBpm: 92, pattern: "L-RL-R-LL-RL-(RR)L" },
+    { level: 28, title: "Lv.28 주고받는 잼", badge: "콜 앤 리스폰스", desc: "클라베 모티브와 롤링 릭을 주고받는 즉흥 호흡", baseBpm: 95, pattern: "R-RLLRLLR-RLL(RR)L" },
+    { level: 29, title: "Lv.29 엇박 폭풍 쨉", badge: "하이퍼 펑크", desc: "정박을 비우고 16분 엇박 쨉을 쏟아붓는 고급 패턴", baseBpm: 98, pattern: "L-LR-R-R-RLRLRRL" },
+    { level: 30, title: "Lv.30 파이널 챌린지", badge: "최종 보스", desc: "인워드, 베이스 홀드, 정파라, 당김음의 총결합", baseBpm: 102, pattern: "RLLR(LL)RLRLRR-(RR)L" }
   ];
+
+  function parsePatternBlocks(patStr, is8Step = false) {
+    const blocks = [];
+    const maxSteps = is8Step ? 8 : 16;
+    const cleanStr = patStr.replace(/\s+/g, '');
+    let currentStep = 0;
+    let i = 0;
+
+    while (i < cleanStr.length && currentStep < maxSteps) {
+      if (cleanStr[i] === '(') {
+        let closeIdx = cleanStr.indexOf(')', i);
+        if (closeIdx !== -1) {
+          let inner = cleanStr.substring(i + 1, closeIdx);
+          let hand = inner[0] || 'L';
+          let len = Math.min(maxSteps - currentStep, inner.length);
+          blocks.push({
+            hand: hand,
+            isRest: false,
+            isLong: true,
+            lenSteps: len,
+            startStep: currentStep,
+            endStep: currentStep + len - 1
+          });
+          currentStep += len;
+          i = closeIdx + 1;
+          continue;
+        }
+      }
+      let ch = cleanStr[i];
+      if (ch === '-' || ch === '0') {
+        blocks.push({
+          hand: '-',
+          isRest: true,
+          isLong: false,
+          lenSteps: 1,
+          startStep: currentStep,
+          endStep: currentStep
+        });
+        currentStep++;
+      } else if (ch === 'R' || ch === 'L') {
+        blocks.push({
+          hand: ch,
+          isRest: false,
+          isLong: false,
+          lenSteps: 1,
+          startStep: currentStep,
+          endStep: currentStep
+        });
+        currentStep++;
+      }
+      i++;
+    }
+
+    while (currentStep < maxSteps) {
+      blocks.push({
+        hand: '-',
+        isRest: true,
+        isLong: false,
+        lenSteps: 1,
+        startStep: currentStep,
+        endStep: currentStep
+      });
+      currentStep++;
+    }
+    return blocks;
+  }
 
   let currentChapterIdx = 0;
   let currentLevelIdx = 0;
@@ -645,20 +733,19 @@
   let lastAcc = 0;
   let lastRank = "SSS";
 
-  // 모범연주 변수
+  let activeHoldingNotes = { L: null, R: null };
   let isDemoPlaying = false;
   let demoTimerId = null;
   let demoStep = 0;
   let nextDemoNoteTime = 0;
 
-  // --- 저장소 & 해금 로직 ---
   function getLevelStars(lvlNum) {
     return parseInt(localStorage.getItem(`groove_lv_${lvlNum}_stars`)) || 0;
   }
 
   function isLevelUnlocked(lvlNum) {
-    if ((lvlNum - 1) % 5 === 0) return true; // 1, 6, 11, 16, 21, 26 기본 오픈
-    return getLevelStars(lvlNum - 1) >= 1;    // 이전 레벨 별 1개(A등급) 이상
+    if (lvlNum === 1) return true;
+    return getLevelStars(lvlNum - 1) >= 1;
   }
 
   function updateTotalStarsDisplay() {
@@ -676,7 +763,6 @@
     }
   }
 
-  // --- 챕터 및 레벨 렌더링 ---
   function switchChapter(chapIdx) {
     if (isRunning) return;
     stopDemoPlay();
@@ -686,7 +772,15 @@
     });
     document.getElementById('chapterTitleLabel').textContent = CHAPTERS[chapIdx];
     renderLevelNav();
-    selectLevel(chapIdx * 5);
+
+    const startIdx = chapIdx * 5;
+    let targetIdx = startIdx;
+    for (let i = 0; i < 5; i++) {
+      if (isLevelUnlocked(CURRICULUM[startIdx + i].level)) {
+        targetIdx = startIdx + i;
+      }
+    }
+    selectLevel(targetIdx);
   }
 
   function renderLevelNav() {
@@ -766,29 +860,55 @@
   function buildStepGrid() {
     const grid = document.getElementById('stepGrid');
     grid.innerHTML = '';
-    const pattern = CURRICULUM[currentLevelIdx].pattern;
+    const is8Step = (currentChapterIdx === 0);
+    const blocks = parsePatternBlocks(CURRICULUM[currentLevelIdx].pattern, is8Step);
+
     grid.style.gridTemplateColumns = 'repeat(8, 1fr)';
 
-    pattern.forEach((hand, i) => {
+    blocks.forEach((block) => {
       const node = document.createElement('div');
-      const isRest = hand === '-';
-      node.className = `step-node ${isRest ? 'hand-rest' : (hand === 'R' ? 'hand-R' : 'hand-L')}`;
-      node.innerHTML = `<div class="note-hand">${isRest ? '•' : hand}</div><div class="note-sub">${i + 1}</div>`;
+      let extraClass = '';
+      if (block.isRest) extraClass = 'hand-rest';
+      else if (block.hand === 'R') extraClass = 'hand-R';
+      else if (block.hand === 'L') extraClass = 'hand-L';
+
+      if (block.isLong) extraClass += ' is-long';
+
+      node.className = `step-node ${extraClass}`;
+      node.style.gridColumn = `span ${block.lenSteps}`;
+      node.dataset.start = block.startStep;
+      node.dataset.end = block.endStep;
+
+      let label = block.isRest ? '•' : block.hand;
+      let rangeText = block.isLong ? `${block.startStep + 1}~${block.endStep + 1}` : `${block.startStep + 1}`;
+
+      if (block.isLong) {
+        node.innerHTML = `
+          <div class="note-hand">${block.hand} <span style="font-size:8.5px;font-weight:700;">(${block.lenSteps}칸)</span> ━</div>
+          <div class="note-sub">${rangeText}</div>
+        `;
+      } else {
+        node.innerHTML = `
+          <div class="note-hand">${label}</div>
+          <div class="note-sub">${rangeText}</div>
+        `;
+      }
+
       grid.appendChild(node);
     });
   }
 
-  // --- 오디오 파이프라인 ---
-  function unlockAudioPipeline() {
+  async function unlockAudioPipeline() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
   }
 
   ['touchstart', 'touchend', 'click'].forEach(evt => {
     window.addEventListener(evt, () => unlockAudioPipeline(), { once: true, passive: true });
   });
 
-  // 0ms 즉시 피크 도달 비트 플래시 함수
   function triggerBeatFlash(isAccent) {
     const frame = document.getElementById('mainDeviceFrame');
     if (!frame) return;
@@ -815,35 +935,36 @@
     } catch(e) {}
   }
 
-  // 모범연주 톤
-  function playDemoTone(time, hand) {
+  function playDemoTone(time, hand, lenSteps = 1) {
     if (!audioCtx || hand === '-') return;
     try {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+      const duration = lenSteps * noteInterval;
       
       if (hand === 'L') {
         osc.type = "triangle";
         osc.frequency.setValueAtTime(130.81, time);
         gain.gain.setValueAtTime(0.7, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+        gain.gain.setValueAtTime(0.6, time + Math.max(0.05, duration - 0.03));
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
       } else {
         osc.type = "sawtooth";
         osc.frequency.setValueAtTime(523.25, time);
         gain.gain.setValueAtTime(0.5, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+        gain.gain.setValueAtTime(0.4, time + Math.max(0.04, duration - 0.02));
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
       }
       
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(time);
-      osc.stop(time + 0.14);
+      osc.stop(time + duration + 0.02);
     } catch(e) {}
   }
 
-  // --- 모범연주 미리듣기 ---
-  function toggleDemoPlay() {
-    unlockAudioPipeline();
+  async function toggleDemoPlay() {
+    await unlockAudioPipeline();
     if (isRunning) return;
 
     if (isDemoPlaying) {
@@ -862,9 +983,8 @@
     document.getElementById('sessionStatus').innerHTML = `<span style="color:var(--accent-orange)">🎧 모범연주 재생 중...</span>`;
 
     beatInterval = 60 / bpm;
-    const currLevel = CURRICULUM[currentLevelIdx];
-    const notesPerBar = currLevel.pattern.length;
-    noteInterval = beatInterval / (notesPerBar === 16 ? 4 : 2);
+    const is8Step = (currentChapterIdx === 0);
+    noteInterval = beatInterval / (is8Step ? 2 : 4);
 
     nextDemoNoteTime = audioCtx.currentTime + 0.05;
     scheduleDemoLoop();
@@ -874,12 +994,12 @@
     if (!isDemoPlaying) return;
 
     const currLevel = CURRICULUM[currentLevelIdx];
-    const pattern = currLevel.pattern;
-    const notesPerBar = pattern.length;
+    const is8Step = (currentChapterIdx === 0);
+    const blocks = parsePatternBlocks(currLevel.pattern, is8Step);
+    const notesPerBar = is8Step ? 8 : 16;
 
     while (nextDemoNoteTime < audioCtx.currentTime + 0.15) {
       const activeIdx = demoStep % notesPerBar;
-      const hand = pattern[activeIdx];
       const scheduledTime = nextDemoNoteTime;
 
       const isBeat = (notesPerBar === 16) ? (activeIdx % 4 === 0) : (activeIdx % 2 === 0);
@@ -890,15 +1010,18 @@
         setTimeout(() => { if (isDemoPlaying) triggerBeatFlash(isAccent); }, delayMs);
       }
 
-      if (hand === 'R' || hand === 'L') {
-        playDemoTone(scheduledTime, hand);
+      const currentBlock = blocks.find(b => b.startStep === activeIdx);
+      if (currentBlock && !currentBlock.isRest) {
+        playDemoTone(scheduledTime, currentBlock.hand, currentBlock.lenSteps);
       }
 
       const visualDelay = Math.max(0, (scheduledTime - audioCtx.currentTime) * 1000);
       setTimeout(() => {
         if (!isDemoPlaying) return;
-        document.querySelectorAll('.step-node').forEach((node, idx) => {
-          node.classList.toggle('active', idx === activeIdx);
+        document.querySelectorAll('.step-node').forEach((node) => {
+          const s = parseInt(node.dataset.start);
+          const e = parseInt(node.dataset.end);
+          node.classList.toggle('active', activeIdx >= s && activeIdx <= e);
         });
       }, visualDelay);
 
@@ -919,44 +1042,49 @@
     document.querySelectorAll('.step-node').forEach(node => node.classList.remove('active'));
   }
 
-  // --- 세션 엔진 ---
-  function toggleSession() {
-    unlockAudioPipeline();
+  async function toggleSession() {
+    await unlockAudioPipeline();
     stopDemoPlay();
     if (isRunning) return;
 
     beatInterval = 60 / bpm;
+    const is8Step = (currentChapterIdx === 0);
     const currLevel = CURRICULUM[currentLevelIdx];
-    const notesPerBar = currLevel.pattern.length;
-    noteInterval = beatInterval / (notesPerBar === 16 ? 4 : 2);
+    noteInterval = beatInterval / (is8Step ? 2 : 4);
 
     targetNotes = [];
     scheduledBeats = 0;
     currentCombo = 0;
     maxCombo = 0;
+    activeHoldingNotes = { L: null, R: null };
 
-    sessionStartTime = audioCtx.currentTime + 0.05;
+    const blocks = parsePatternBlocks(currLevel.pattern, is8Step);
+    const notesPerBar = is8Step ? 8 : 16;
+
+    sessionStartTime = audioCtx.currentTime + 0.15;
     playStartTime = sessionStartTime + (COUNT_IN_BEATS * beatInterval);
     nextBeatTime = sessionStartTime;
 
     for (let b = 0; b < TOTAL_BARS; b++) {
-      for (let s = 0; s < notesPerBar; s++) {
-        const hand = currLevel.pattern[s];
-        const stepIdx = (b * notesPerBar) + s;
-        const targetTime = playStartTime + (stepIdx * noteInterval);
+      blocks.forEach(block => {
+        if (!block.isRest) {
+          const stepIdx = (b * notesPerBar) + block.startStep;
+          const targetTime = playStartTime + (stepIdx * noteInterval);
 
-        if (hand === 'R' || hand === 'L') {
           targetNotes.push({
             index: targetNotes.length,
             stepIndex: stepIdx,
-            hand: hand,
+            hand: block.hand,
             targetTime: targetTime,
+            isLong: block.isLong,
+            lenSteps: block.lenSteps,
             hit: false,
             judged: false,
-            offsetMs: 0
+            offsetMs: 0,
+            releaseErr: 'none'
           });
         }
-      }
+      });
     }
 
     isRunning = true;
@@ -969,37 +1097,35 @@
   function scheduler() {
     if (!isRunning) return;
     const current = audioCtx.currentTime;
-    // 하드웨어 입출력 딜레이(25ms) 보정
-    const compTime = current - 0.025;
-    const expireTolerance = noteInterval * 0.50;
+    const standardHitWindow = noteInterval * 0.70;
 
-    // 메트로놈 클릭 & 시각 플래시
     while (nextBeatTime < current + 0.15 && scheduledBeats < (COUNT_IN_BEATS + TOTAL_BARS * 4)) {
       const isAccent = (scheduledBeats % 4 === 0);
       const clickTime = nextBeatTime;
       playClick(clickTime, isAccent);
 
-      const delayMs = Math.max(0, (clickTime - current) * 1000);
+      const delayMs = Math.max(0, (clickTime - audioCtx.currentTime) * 1000);
       setTimeout(() => { if (isRunning) triggerBeatFlash(isAccent); }, delayMs);
 
       nextBeatTime += beatInterval;
       scheduledBeats++;
     }
 
-    // 완전히 지나쳐버린 노트만 순차적으로 MISS 처리
     targetNotes.forEach(note => {
-      if (!note.judged && (compTime - note.targetTime) > expireTolerance) {
-        note.judged = true;
-        note.hit = false;
-        note.offsetMs = 999;
-        currentCombo = 0;
-        updateFeedback("MISS (놓침)", "var(--accent-miss)");
-        document.getElementById('comboCounter').textContent = `0 COMBO`;
+      if (!note.judged) {
+        const customWindow = (note.index < 2) ? (noteInterval * 0.95) : standardHitWindow;
+        if ((current - note.targetTime) > customWindow) {
+          note.judged = true;
+          note.offsetMs = 999;
+          currentCombo = 0;
+          updateFeedback("MISS (놓침)", "var(--accent-miss)");
+          document.getElementById('comboCounter').textContent = `0 COMBO`;
+        }
       }
     });
 
-    const currLevel = CURRICULUM[currentLevelIdx];
-    const totalSessionDuration = (TOTAL_BARS * currLevel.pattern.length) * noteInterval;
+    const is8Step = (currentChapterIdx === 0);
+    const totalSessionDuration = (TOTAL_BARS * (is8Step ? 8 : 16)) * noteInterval;
     const isAllJudged = targetNotes.every(n => n.judged);
     const isTimeUp = current >= (playStartTime + totalSessionDuration + 0.08);
 
@@ -1012,72 +1138,98 @@
     requestAnimationFrame(scheduler);
   }
 
-  // --- 순차 큐(FIFO) 기반 정밀 타건 판정 ---
-  function handleInput(hand, clientX, clientY) {
+  function handleInput(hand, clientX, clientY, isMidi = false) {
     createRipple(hand, clientX, clientY);
     if (!isRunning || !audioCtx) return;
 
-    const current = audioCtx.currentTime;
-    const compTime = current - 0.025; // 25ms 입력 딜레이 보정
-    const maxWindow = noteInterval * 0.50; // 인접 노트 침범 절대 방지
+    const midiOffset = isMidi ? 0.028 : 0.0;
+    const current = audioCtx.currentTime - midiOffset;
+    const standardHitWindow = noteInterval * 0.70;
 
-    // 예비박 구간 터치 보호
-    if (current < playStartTime - 0.15) {
-      updateFeedback("예비박 카운트 중...", "var(--accent-orange)");
+    let closest = null;
+    let minDiff = Infinity;
+
+    for (let i = 0; i < targetNotes.length; i++) {
+      const note = targetNotes[i];
+      if (note.judged) continue;
+
+      const customWindow = (note.index < 2) ? (noteInterval * 0.95) : standardHitWindow;
+      const diff = current - note.targetTime;
+
+      if (Math.abs(diff) <= customWindow) {
+        if (Math.abs(diff) < Math.abs(minDiff)) {
+          minDiff = diff;
+          closest = note;
+        }
+      }
+    }
+
+    if (!closest) {
+      if (current >= playStartTime - standardHitWindow) {
+        updateFeedback("MISS (박자 이탈)", "var(--accent-miss)");
+        currentCombo = 0;
+        document.getElementById('comboCounter').textContent = `0 COMBO`;
+      }
       return;
     }
 
-    // 1. 이미 지난 노트들을 먼저 MISS로 털어냄
-    for (let i = 0; i < targetNotes.length; i++) {
-      const n = targetNotes[i];
-      if (!n.judged && (compTime - n.targetTime) > maxWindow) {
-        n.judged = true;
-        n.hit = false;
-        n.offsetMs = 999;
-        currentCombo = 0;
-      }
+    closest.judged = true;
+
+    if (closest.hand !== hand) {
+      closest.offsetMs = 999;
+      currentCombo = 0;
+      updateFeedback("WRONG HAND!", "var(--accent-miss)");
+      return;
     }
 
-    // 2. 가장 앞선 미판정 타겟 1개만 선택 (뒷 노트 가로채기 원천 차단)
-    const target = targetNotes.find(n => !n.judged);
-    if (!target) return;
-
-    const diff = compTime - target.targetTime;
-    const diffMs = diff * 1000;
+    closest.hit = true;
+    const diffMs = minDiff * 1000;
+    closest.offsetMs = diffMs;
     const absMs = Math.abs(diffMs);
 
-    // 판정 허용 범위 내 진입 시 처리
-    if (absMs <= maxWindow * 1000) {
-      target.judged = true;
+    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.22))));
 
-      if (target.hand === hand) {
-        target.hit = true;
-        target.offsetMs = diffMs;
-        const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.22))));
+    if (closest.isLong) {
+      activeHoldingNotes[hand] = {
+        note: closest,
+        pressTime: current,
+        targetDuration: closest.lenSteps * noteInterval
+      };
+    }
 
-        if (absMs <= 45) {
-          currentCombo++;
-          updateFeedback(`PERFECT (${syncPercent}% 싱크)`, "var(--accent-right)");
-        } else if (absMs <= 85) {
-          currentCombo++;
-          updateFeedback(`GREAT (${syncPercent}% 싱크)`, "var(--accent-left)");
-        } else {
-          const tag = diffMs < 0 ? "EARLY" : "LATE";
-          updateFeedback(`${tag} (${syncPercent}% 싱크)`, "var(--accent-orange)");
-          currentCombo = 0;
-        }
-      } else {
-        target.hit = false;
-        target.offsetMs = 999;
-        currentCombo = 0;
-        updateFeedback("WRONG HAND!", "var(--accent-miss)");
+    if (absMs <= 45) {
+      currentCombo++;
+      updateFeedback(closest.isLong ? `PERFECT HOLD! (${syncPercent}%)` : `PERFECT (${syncPercent}%)`, "var(--accent-right)");
+    } else if (absMs <= 85) {
+      currentCombo++;
+      updateFeedback(`GREAT (${syncPercent}%)`, "var(--accent-left)");
+    } else {
+      const tag = diffMs < 0 ? "EARLY" : "LATE";
+      updateFeedback(`${tag} (${syncPercent}%)`, "var(--accent-orange)");
+      currentCombo = 0;
+    }
+
+    if (currentCombo > maxCombo) maxCombo = currentCombo;
+    document.getElementById('comboCounter').textContent = `${currentCombo} COMBO`;
+  }
+
+  function handleRelease(hand) {
+    if (!isRunning || !audioCtx) return;
+    const current = audioCtx.currentTime;
+    const holding = activeHoldingNotes[hand];
+
+    if (holding && holding.note) {
+      const heldTime = current - holding.pressTime;
+      const targetDuration = holding.targetDuration;
+
+      if (heldTime < targetDuration * 0.50) {
+        holding.note.releaseErr = 'early';
+        updateFeedback("SHORT RELEASE! (조금 더 유지해보세요)", "var(--accent-orange)");
+      } else if (heldTime > targetDuration + noteInterval * 0.85) {
+        holding.note.releaseErr = 'late';
+        updateFeedback("LATE RELEASE! (다음 박 전에 떼어보세요)", "var(--accent-orange)");
       }
-
-      if (currentCombo > maxCombo) maxCombo = currentCombo;
-      document.getElementById('comboCounter').textContent = `${currentCombo} COMBO`;
-    } else if (diff < -maxWindow) {
-      // 너무 이른 샷 (미래 노트를 미리 소진시키지 않음)
-      updateFeedback("TOO EARLY!", "var(--accent-orange)");
+      activeHoldingNotes[hand] = null;
     }
   }
 
@@ -1088,28 +1240,52 @@
   }
 
   function updateUIProgress(current) {
+    const is8Step = (currentChapterIdx === 0);
+    const totalSteps = is8Step ? 8 : 16;
+
     if (current < playStartTime) {
-      const count = Math.floor((current - sessionStartTime) / beatInterval) + 1;
-      document.getElementById('sessionStatus').innerHTML = `<span style="color:var(--accent-orange)">예비박 카운트: <b>${Math.min(COUNT_IN_BEATS, Math.max(1, count))} / ${COUNT_IN_BEATS}</b></span>`;
+      if (current < sessionStartTime) {
+        document.getElementById('sessionStatus').innerHTML = `<span style="color:var(--accent-orange)">카운트다운 준비 중...</span>`;
+      } else {
+        const count = Math.floor((current - sessionStartTime) / beatInterval) + 1;
+        const displayCount = Math.min(COUNT_IN_BEATS, Math.max(1, count));
+        document.getElementById('sessionStatus').innerHTML = `<span style="color:var(--accent-orange)">예비박 카운트: <b>${displayCount} / ${COUNT_IN_BEATS}</b></span>`;
+      }
     } else {
       const elapsed = current - playStartTime;
       const currentStep = Math.floor(elapsed / noteInterval);
       const currentBar = Math.min(TOTAL_BARS, Math.floor(elapsed / (4 * beatInterval)) + 1);
-      const subName = CURRICULUM[currentLevelIdx].pattern.length === 16 ? "16비트" : "8비트";
+      const subName = is8Step ? "8비트" : "16비트";
       document.getElementById('sessionStatus').innerHTML = `<span style="color:var(--accent-right)">🔥 ${subName} 연주 중 [ <b>${currentBar} / ${TOTAL_BARS} 마디</b> ]</span>`;
 
-      const patternLen = CURRICULUM[currentLevelIdx].pattern.length;
-      const activeIdx = currentStep % patternLen;
-      document.querySelectorAll('.step-node').forEach((node, idx) => {
-        node.classList.toggle('active', idx === activeIdx);
+      const activeIdx = currentStep % totalSteps;
+      document.querySelectorAll('.step-node').forEach((node) => {
+        const s = parseInt(node.dataset.start);
+        const e = parseInt(node.dataset.end);
+        node.classList.toggle('active', activeIdx >= s && activeIdx <= e);
       });
     }
   }
 
-  // --- 스마트 진단 알고리즘 ---
-  function evaluatePerformance(validHits, acc) {
-    if (validHits.length < 8) return "연주 타수가 너무 적습니다. 끝까지 집중해서 완주해보세요!";
+  function evaluatePerformance(validHits, acc, rank) {
+    if (rank === "FAIL" || acc < 80) {
+      return "❌ 아쉬워요! A등급(싱크율 80% 이상)을 달성해야 다음 레벨이 열립니다.";
+    }
+    if (validHits.length < 6) return "연주 타수가 너무 적습니다. 끝까지 집중해서 완주해보세요!";
     
+    const longHits = validHits.filter(n => n.isLong);
+    if (longHits.length >= 2) {
+      const earlyRelCount = longHits.filter(n => n.releaseErr === 'early').length;
+      const lateRelCount = longHits.filter(n => n.releaseErr === 'late').length;
+
+      if (earlyRelCount >= 2) {
+        return "⚠️ 손을 조금 급하게 떼는 경향이 있어요! (손가락을 살짝 더 붙여 여백을 만들어보세요)";
+      }
+      if (lateRelCount >= 2) {
+        return "⚠️ 손을 너무 늦게 떼는 경향이 있어요! (다음 박 직전에 깔끔하게 릴리즈해보세요)";
+      }
+    }
+
     const meanOffset = validHits.reduce((a, b) => a + b.offsetMs, 0) / validHits.length;
     const half = Math.floor(validHits.length / 2);
     const firstHalf = validHits.slice(0, half);
@@ -1127,7 +1303,6 @@
     return "✨ 아주 좋아요! 안정적인 그루브 포켓을 유지했습니다.";
   }
 
-  // --- 결과 정산 & 저장 ---
   function finishSession() {
     isRunning = false;
     document.getElementById('sessionStatus').textContent = "연습 완료";
@@ -1141,7 +1316,7 @@
       else if (n.hit) {
         validHits.push(n);
         const abs = Math.abs(n.offsetMs);
-        if (abs <= 45) perfect++;
+        if (abs <= 45 && n.releaseErr === 'none') perfect++;
         else if (abs <= 85) great++;
         else earlyLate++;
       } else miss++;
@@ -1173,15 +1348,13 @@
     renderLevelNav();
     updateTotalStarsDisplay();
 
-    // 결과 UI 업데이트
     document.getElementById('resultRank').textContent = isPractice ? "PRACTICE" : rank;
     document.getElementById('resultRank').style.color = isPractice ? "var(--text-muted)" : (stars > 0 ? "var(--accent-orange)" : "var(--accent-miss)");
-    document.getElementById('resultStars').textContent = isPractice ? "⚠️ 연습 모드 (기록 미반영)" : '★'.repeat(stars) + '☆'.repeat(3 - stars);
+    document.getElementById('resultStars').textContent = isPractice ? "⚠️ 연습 모드 (기록 미반영)" : (stars > 0 ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : "☆☆☆ (FAIL)");
     document.getElementById('resultAcc').innerHTML = `<b>평균 싱크율 ${acc.toFixed(1)}%</b> (${totalSessionNotes}타 • 최대 ${maxCombo} COMBO)`;
 
-    document.getElementById('diagnosisText').textContent = evaluatePerformance(validHits, acc);
+    document.getElementById('diagnosisText').textContent = evaluatePerformance(validHits, acc, rank);
 
-    // DAW 점도표 렌더링
     const dawRoll = document.getElementById('dawRoll');
     dawRoll.querySelectorAll('.dot').forEach(d => d.remove());
 
@@ -1203,12 +1376,11 @@
       dawRoll.appendChild(dot);
     });
 
-    const hasNext = (currentLevelIdx < CURRICULUM.length - 1) && isLevelUnlocked(currLvlNum + 1);
-    document.getElementById('nextLevelBtn').style.display = hasNext ? 'block' : 'none';
+    const canGoNext = (currentLevelIdx < CURRICULUM.length - 1) && (stars >= 1 || isLevelUnlocked(currLvlNum + 1));
+    document.getElementById('nextLevelBtn').style.display = canGoNext ? 'block' : 'none';
     document.getElementById('resultModal').style.display = 'block';
   }
 
-  // '다시 연습하기' 클릭 시 대기 화면으로 복귀
   function retryLevel() {
     resetToMenu();
   }
@@ -1223,19 +1395,129 @@
     document.getElementById('resultModal').style.display = 'none';
     document.getElementById('startBtn').style.display = 'flex';
     document.getElementById('sessionStatus').textContent = "대기 중 (시작 버튼 클릭)";
-    document.getElementById('feedbackText').textContent = "준비 완료";
+    document.getElementById('feedbackText').textContent = "준비 완료 (마스터건반 ~G2:L / G#2~:R)";
     document.getElementById('feedbackText').style.color = "var(--text-primary)";
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
-  function copyResultText() {
-    const text = `[Groove Lab] ${CURRICULUM[currentLevelIdx].title}\n🏆 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)\n최대 콤보: ${maxCombo} COMBO\n지금 손가락 리듬 피지컬 측정하기 👉 ${window.location.href}`;
-    navigator.clipboard.writeText(text).then(() => {
-      alert("결과가 클립보드에 복사되었습니다! SNS나 커뮤니티에 공유해보세요.");
+  function shareResultCard() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1080;
+    const ctx = canvas.getContext('2d');
+    const currLvl = CURRICULUM[currentLevelIdx];
+    const isPractice = tempoMultiplier !== 1.0;
+    const stars = getLevelStars(currLvl.level);
+
+    const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1080);
+    bgGrad.addColorStop(0, '#141518');
+    bgGrad.addColorStop(1, '#1c1e26');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1080, 1080);
+
+    ctx.strokeStyle = '#2e303c';
+    ctx.lineWidth = 12;
+    ctx.strokeRect(30, 30, 1020, 1020);
+
+    ctx.fillStyle = '#ff9f0a';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('GROOVE LAB : 16-BIT RUDIMENT', 540, 110);
+
+    ctx.fillStyle = '#f2f2f7';
+    ctx.font = 'bold 44px sans-serif';
+    ctx.fillText(`${currLvl.title} (${Math.round(currLvl.baseBpm * tempoMultiplier)} BPM)`, 540, 175);
+
+    ctx.fillStyle = isPractice ? '#8e8e93' : (stars > 0 ? '#ff9f0a' : '#ff453a');
+    ctx.font = '900 160px sans-serif';
+    ctx.fillText(isPractice ? 'PRACTICE' : lastRank, 540, 350);
+
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 54px sans-serif';
+    ctx.fillText(isPractice ? '⚠️ 연습 모드' : (stars > 0 ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '☆☆☆ (FAIL)'), 540, 430);
+
+    ctx.fillStyle = '#f2f2f7';
+    ctx.font = 'bold 38px sans-serif';
+    ctx.fillText(`평균 싱크율 ${lastAcc.toFixed(1)}%  •  최대 ${maxCombo} COMBO`, 540, 500);
+
+    ctx.fillStyle = '#232530';
+    ctx.beginPath();
+    ctx.roundRect(100, 540, 880, 80, 16);
+    ctx.fill();
+    ctx.strokeStyle = '#ff9f0a';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText(document.getElementById('diagnosisText').textContent.trim(), 540, 592);
+
+    const rollX = 100, rollY = 660, rollW = 880, rollH = 250;
+    ctx.fillStyle = '#101115';
+    ctx.beginPath();
+    ctx.roundRect(rollX, rollY, rollW, rollH, 16);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(rollX, rollY + rollH / 2);
+    ctx.lineTo(rollX + rollW, rollY + rollH / 2);
+    ctx.stroke();
+
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillStyle = '#ff9f0a'; ctx.textAlign = 'left';
+    ctx.fillText('▲ 빠름 (Early)', rollX + 20, rollY + 35);
+    ctx.fillStyle = '#70a1ff';
+    ctx.fillText('▼ 느림 (Late)', rollX + 20, rollY + rollH - 20);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.textAlign = 'right';
+    ctx.fillText('0ms 정박', rollX + rollW - 20, rollY + rollH / 2 + 7);
+
+    const totalNotes = targetNotes.length;
+    targetNotes.forEach((n, idx) => {
+      const px = rollX + 40 + (idx / totalNotes) * (rollW - 80);
+      let py = rollY + rollH / 2;
+
+      if (n.offsetMs >= 900) {
+        ctx.fillStyle = '#ff453a';
+      } else {
+        const clamped = Math.max(-50, Math.min(50, n.offsetMs));
+        py = (rollY + rollH / 2) + (clamped / 50) * (rollH * 0.38);
+        ctx.fillStyle = n.hand === 'L' ? '#0a84ff' : '#30d158';
+      }
+
+      ctx.beginPath();
+      ctx.arc(px, py, 6.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.fillStyle = '#8e8e93';
+    ctx.font = 'bold 26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎹 박터틀의 음악노트  |  groovelab.co.kr', 540, 990);
+
+    canvas.toBlob((blob) => {
+      const file = new File([blob], `groove_lab_lv${currLvl.level}_${lastRank}.png`, { type: 'image/png' });
+      
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: `Groove Lab ${currLvl.title} 결과`,
+          text: `16비트 루디먼트 마스터 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
+        }).catch(() => {});
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `groove_lab_lv${currLvl.level}_${lastRank}.png`;
+        a.click();
+        alert("1:1 정사각형 결과 카드가 저장되었습니다! 📸");
+      }
     });
   }
 
-  // --- 터치 & 물결 애니메이션 ---
   const padL = document.getElementById('padL');
   const padR = document.getElementById('padR');
 
@@ -1247,9 +1529,22 @@
       handleInput(hand, touch.clientX, touch.clientY);
     }, { passive: false });
 
+    pad.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handleRelease(hand);
+    }, { passive: false });
+
     pad.addEventListener('mousedown', (e) => {
       unlockAudioPipeline();
       handleInput(hand, e.clientX, e.clientY);
+    });
+
+    pad.addEventListener('mouseup', () => {
+      handleRelease(hand);
+    });
+
+    pad.addEventListener('mouseleave', () => {
+      handleRelease(hand);
     });
   }
   bindPadEvents(padL, 'L');
@@ -1304,8 +1599,8 @@
     requestAnimationFrame(animateRipples);
   }
 
-  // --- 키보드 이벤트 ---
   window.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
     if (e.code === 'Space') {
       e.preventDefault();
       unlockAudioPipeline();
@@ -1321,12 +1616,70 @@
     }
   });
 
+  window.addEventListener('keyup', (e) => {
+    if (['KeyA', 'KeyS', 'KeyD', 'ArrowLeft'].includes(e.code)) {
+      handleRelease('L');
+    }
+    if (['KeyJ', 'KeyK', 'KeyL', 'ArrowRight'].includes(e.code)) {
+      handleRelease('R');
+    }
+  });
+
+  let lastMidiAttackTime = { L: 0, R: 0 };
+  const CHORD_DEBOUNCE_MS = 35;
+
+  function getHandFromMIDINote(note) {
+    if (note <= 43) return 'L';
+    if (note >= 44) return 'R';
+    return null;
+  }
+
+  function handleMIDIMessage(event) {
+    const [status, note, velocity] = event.data;
+    const command = status >> 4;
+    const hand = getHandFromMIDINote(note);
+    if (!hand) return;
+
+    if (command === 9 && velocity > 0) {
+      unlockAudioPipeline();
+      const now = performance.now();
+      if (now - lastMidiAttackTime[hand] < CHORD_DEBOUNCE_MS) {
+        return;
+      }
+      lastMidiAttackTime[hand] = now;
+      handleInput(hand, null, null, true);
+    } else if (command === 8 || (command === 9 && velocity === 0)) {
+      handleRelease(hand);
+    }
+  }
+
+  function initMIDI() {
+    if (navigator.requestMIDIAccess) {
+      navigator.requestMIDIAccess().then(
+        (midiAccess) => {
+          for (let input of midiAccess.inputs.values()) {
+            input.onmidimessage = handleMIDIMessage;
+          }
+          midiAccess.onstatechange = (e) => {
+            if (e.port.type === 'input' && e.port.state === 'connected') {
+              e.port.onmidimessage = handleMIDIMessage;
+            }
+          };
+        },
+        () => {
+          console.log("MIDI 접근이 거부되었거나 지원되지 않습니다.");
+        }
+      );
+    }
+  }
+
   window.addEventListener('load', () => {
     setupCanvases();
     renderLevelNav();
     updateTotalStarsDisplay();
     selectLevel(0);
     animateRipples();
+    initMIDI();
   });
   window.addEventListener('resize', setupCanvases);
 </script>
