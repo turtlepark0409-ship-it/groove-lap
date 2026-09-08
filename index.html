@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Groove Lab - 16비트 루디먼트 마스터</title>
+<title>왼손오른손 리듬감 테스트</title>
 <style>
   :root {
     --bg-main: #141518;
@@ -79,7 +79,6 @@
     }
   }
 
-  /* 상단 동적 팁 배너 */
   .guide-banner {
     background: rgba(255, 159, 10, 0.08);
     border: 1px solid rgba(255, 159, 10, 0.25);
@@ -443,6 +442,57 @@
     touch-action: manipulation;
   }
   .btn-share-card:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* 갤러리 저장용 모달 */
+  .save-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .save-modal-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 16px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .save-preview-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    object-fit: contain;
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+  .save-modal-guide {
+    font-size: 12.5px;
+    color: #ffc266;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .btn-close-modal {
+    background: #2b2d38;
+    color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -563,8 +613,20 @@
     <div class="result-btn-group">
       <button class="btn-secondary" onclick="retryLevel()">🔄 다시 연습하기</button>
       <button class="btn-main" id="nextLevelBtn" onclick="nextLevel()">⏭️ 다음 레벨로</button>
-      <button class="btn-share-card" onclick="shareResultCard()">📸 이미지로 저장하기</button>
+      <button class="btn-share-card" onclick="shareResultCard()">📸 갤러리에 저장하기</button>
     </div>
+  </div>
+</div>
+
+<!-- 갤러리 저장용 모달 -->
+<div class="save-modal-overlay" id="saveModalOverlay" onclick="closeSaveModal(event)">
+  <div class="save-modal-card" onclick="event.stopPropagation()">
+    <h3 style="font-size:15px; font-weight:800; color:var(--accent-orange);">📸 결과 카드 생성 완료</h3>
+    <img id="savePreviewImg" class="save-preview-img" alt="Result Card">
+    <p class="save-modal-guide">
+      👉 이미지를 <b>길게(꾹) 눌러서 [사진에 저장] 또는 [이미지 저장]</b>을 누르면 갤러리에 저장됩니다!
+    </p>
+    <button class="btn-close-modal" onclick="closeSaveModal()">닫기</button>
   </div>
 </div>
 
@@ -743,8 +805,13 @@
     return parseInt(localStorage.getItem(`groove_lv_${lvlNum}_stars`)) || 0;
   }
 
+  // 버그 수정: 
+  // 1) 이미 별을 1개 이상 획득한 레벨은 영구 해금
+  // 2) 각 챕터의 첫 레벨(1, 6, 11, 16, 21, 26)은 기본 해금
+  // 3) 직전 레벨을 클리어했으면 순차 해금
   function isLevelUnlocked(lvlNum) {
-    if (lvlNum === 1) return true;
+    if (getLevelStars(lvlNum) >= 1) return true;
+    if ((lvlNum - 1) % 5 === 0) return true;
     return getLevelStars(lvlNum - 1) >= 1;
   }
 
@@ -1187,7 +1254,8 @@
     closest.offsetMs = diffMs;
     const absMs = Math.abs(diffMs);
 
-    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.22))));
+    // 판정 완화에 맞추어 싱크율 감산 수식 소폭 완화 (0.20)
+    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.20))));
 
     if (closest.isLong) {
       activeHoldingNotes[hand] = {
@@ -1197,10 +1265,11 @@
       };
     }
 
-    if (absMs <= 45) {
+    // 판정 기준 5ms 관대화 적용 (45ms -> 50ms, 85ms -> 90ms)
+    if (absMs <= 50) {
       currentCombo++;
       updateFeedback(closest.isLong ? `PERFECT HOLD! (${syncPercent}%)` : `PERFECT (${syncPercent}%)`, "var(--accent-right)");
-    } else if (absMs <= 85) {
+    } else if (absMs <= 90) {
       currentCombo++;
       updateFeedback(`GREAT (${syncPercent}%)`, "var(--accent-left)");
     } else {
@@ -1316,8 +1385,9 @@
       else if (n.hit) {
         validHits.push(n);
         const abs = Math.abs(n.offsetMs);
-        if (abs <= 45 && n.releaseErr === 'none') perfect++;
-        else if (abs <= 85) great++;
+        // 정산 판정 기준도 5ms 관대화 적용 (50ms, 90ms)
+        if (abs <= 50 && n.releaseErr === 'none') perfect++;
+        else if (abs <= 90) great++;
         else earlyLate++;
       } else miss++;
     });
@@ -1400,6 +1470,7 @@
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
+  // --- 1:1 고화질 갤러리 저장 및 공유 엔진 ([왼손오른손 리듬감 테스트] 브랜딩 반영) ---
   function shareResultCard() {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -1419,10 +1490,11 @@
     ctx.lineWidth = 12;
     ctx.strokeRect(30, 30, 1020, 1020);
 
+    // 상단 타이틀 브랜딩
     ctx.fillStyle = '#ff9f0a';
-    ctx.font = 'bold 36px sans-serif';
+    ctx.font = 'bold 38px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('GROOVE LAB : 16-BIT RUDIMENT', 540, 110);
+    ctx.fillText('왼손오른손 리듬감 테스트', 540, 110);
 
     ctx.fillStyle = '#f2f2f7';
     ctx.font = 'bold 44px sans-serif';
@@ -1497,25 +1569,46 @@
     ctx.fillStyle = '#8e8e93';
     ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('🎹 박터틀의 음악노트  |  groovelab.co.kr', 540, 990);
+    ctx.fillText('🎹 박터틀의 음악노트  |  왼손오른손 리듬감 테스트', 540, 990);
+
+    const dataUrl = canvas.toDataURL('image/png');
 
     canvas.toBlob((blob) => {
-      const file = new File([blob], `groove_lab_lv${currLvl.level}_${lastRank}.png`, { type: 'image/png' });
-      
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({
-          files: [file],
-          title: `Groove Lab ${currLvl.title} 결과`,
-          text: `16비트 루디먼트 마스터 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
-        }).catch(() => {});
+      if (blob && navigator.share && navigator.canShare) {
+        const file = new File([blob], `rhythm_test_lv${currLvl.level}.png`, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: `[왼손오른손 리듬감 테스트] ${currLvl.title} 결과`,
+            text: `왼손오른손 리듬감 테스트 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
+          }).catch(() => {
+            openSaveModal(dataUrl);
+          });
+          return;
+        }
+      }
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        openSaveModal(dataUrl);
       } else {
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `groove_lab_lv${currLvl.level}_${lastRank}.png`;
+        a.href = dataUrl;
+        a.download = `rhythm_test_lv${currLvl.level}_${lastRank}.png`;
         a.click();
-        alert("1:1 정사각형 결과 카드가 저장되었습니다! 📸");
       }
-    });
+    }, 'image/png');
+  }
+
+  function openSaveModal(dataUrl) {
+    const overlay = document.getElementById('saveModalOverlay');
+    const img = document.getElementById('savePreviewImg');
+    img.src = dataUrl;
+    overlay.style.display = 'flex';
+  }
+
+  function closeSaveModal() {
+    document.getElementById('saveModalOverlay').style.display = 'none';
   }
 
   const padL = document.getElementById('padL');
