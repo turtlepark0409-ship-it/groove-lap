@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Groove Lab - 16비트 루디먼트 마스터</title>
+<title>왼손오른손 리듬감 테스트</title>
 <style>
   :root {
     --bg-main: #141518;
@@ -79,7 +79,6 @@
     }
   }
 
-  /* 상단 동적 팁 배너 */
   .guide-banner {
     background: rgba(255, 159, 10, 0.08);
     border: 1px solid rgba(255, 159, 10, 0.25);
@@ -443,6 +442,57 @@
     touch-action: manipulation;
   }
   .btn-share-card:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* 갤러리 저장용 모달 */
+  .save-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .save-modal-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 16px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .save-preview-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    object-fit: contain;
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+  .save-modal-guide {
+    font-size: 12.5px;
+    color: #ffc266;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .btn-close-modal {
+    background: #2b2d38;
+    color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -563,8 +613,20 @@
     <div class="result-btn-group">
       <button class="btn-secondary" onclick="retryLevel()">🔄 다시 연습하기</button>
       <button class="btn-main" id="nextLevelBtn" onclick="nextLevel()">⏭️ 다음 레벨로</button>
-      <button class="btn-share-card" onclick="shareResultCard()">📸 이미지로 저장하기</button>
+      <button class="btn-share-card" onclick="shareResultCard()">📸 갤러리에 저장하기</button>
     </div>
+  </div>
+</div>
+
+<!-- 갤러리 저장용 모달 -->
+<div class="save-modal-overlay" id="saveModalOverlay" onclick="closeSaveModal(event)">
+  <div class="save-modal-card" onclick="event.stopPropagation()">
+    <h3 style="font-size:15px; font-weight:800; color:var(--accent-orange);">📸 결과 카드 생성 완료</h3>
+    <img id="savePreviewImg" class="save-preview-img" alt="Result Card">
+    <p class="save-modal-guide">
+      👉 이미지를 <b>길게(꾹) 눌러서 [사진에 저장] 또는 [이미지 저장]</b>을 누르면 갤러리에 저장됩니다!
+    </p>
+    <button class="btn-close-modal" onclick="closeSaveModal()">닫기</button>
   </div>
 </div>
 
@@ -600,42 +662,36 @@
   ];
 
   const CURRICULUM = [
-    // Chapter 1 (Lv 1~5: 8비트 8스텝 단일 라인)
     { level: 1, title: "Lv.1 싱글 스트로크", badge: "8비트", desc: "오른손과 왼손을 번갈아 가며 정박 유지", baseBpm: 70, pattern: "RLRLRLRL" },
     { level: 2, title: "Lv.2 더블 스트로크", badge: "8비트", desc: "양손을 2회씩 연속 타건 (RRLL RRLL)", baseBpm: 73, pattern: "RRLLRRLL" },
     { level: 3, title: "Lv.3 기본 파라디들", badge: "8비트", desc: "기본 정방향 파라디들 (RLRR LRLL)", baseBpm: 77, pattern: "RLRRLRLL" },
     { level: 4, title: "Lv.4 리버스 파라디들", badge: "8비트", desc: "앞쪽 더블로 치고 나가는 역파라 (RRLR LLRL)", baseBpm: 81, pattern: "RRLRLLRL" },
     { level: 5, title: "Lv.5 인워드 파라디들", badge: "8비트", desc: "안쪽으로 말려 들어가는 펑크 인워드 (RLLR LRRL)", baseBpm: 85, pattern: "RLLRLRRL" },
 
-    // Chapter 2 (Lv 6~10: 16비트 8x2 두 줄 라인)
     { level: 6, title: "Lv.6 16비트 싱글", badge: "16비트", desc: "16분음표 2배속 싱글 스트로크 (RLRL...)", baseBpm: 65, pattern: "RLRLRLRLRLRLRLRL" },
     { level: 7, title: "Lv.7 16비트 더블", badge: "16비트", desc: "16분음표 더블 핑거링 탄성 훈련 (RRLL...)", baseBpm: 69, pattern: "RRLLRRLLRRLLRRLL" },
     { level: 8, title: "Lv.8 16비트 기본 파라", badge: "16비트", desc: "16분음표 정방향 파라디들 (RLRR LRLL...)", baseBpm: 73, pattern: "RLRRLRLLRLRRLRLL" },
     { level: 9, title: "Lv.9 16비트 리버스", badge: "16비트", desc: "16분음표 리버스 파라디들 (RRLR LLRL...)", baseBpm: 76, pattern: "RRLRLLRLRRLRLLRL" },
     { level: 10, title: "Lv.10 16비트 인워드", badge: "16비트", desc: "16분음표 펑크 인워드 (RLLR LRRL...)", baseBpm: 80, pattern: "RLLRLRRLRLLRLRRL" },
 
-    // Chapter 3 (Lv 11~15: 클라베 & 베이스 리듬)
     { level: 11, title: "Lv.11 더블 드라이브", badge: "클라베", desc: "RLLR LLRL 반복으로 추진력을 만드는 드라이브 리듬", baseBpm: 75, pattern: "RLLRLLRLRLLRLLRL" },
     { level: 12, title: "Lv.12 왼손 엇박 리드", badge: "베이스", desc: "왼손 엇박으로 시작하여 말려 들어가는 훵크 패턴", baseBpm: 78, pattern: "L-R-LRLLRLLRLLRL" },
     { level: 13, title: "Lv.13 마디 넘김 쨉", badge: "인터락", desc: "후반부 LLR- 엇박으로 마디를 넘겨주는 인터락", baseBpm: 82, pattern: "RLLRLLRLLLR-LRLL" },
     { level: 14, title: "Lv.14 양손 크로스", badge: "뇌 분리", desc: "인워드와 리버스가 교차하는 뇌 분리 완성 패턴", baseBpm: 86, pattern: "LRRLRLLRRLLRLLRL" },
     { level: 15, title: "Lv.15 3-3-2 클라베", badge: "정통 클라베", desc: "R-RL 3-3-2 악센트와 16비트 쨉의 정수", baseBpm: 90, pattern: "R-RLR-RLR-LR-LR-" },
 
-    // Chapter 4 (Lv 16~20: 롱노트 & 여백)
     { level: 16, title: "Lv.16 베이스 쿵 쨉", badge: "2칸 서스테인", desc: "(LL) 롱노트 베이스 뒤에 꽂아 넣는 16분 쨉", baseBpm: 75, pattern: "(LL)L-RRLR--L-(LL)L-" },
     { level: 17, title: "Lv.17 3칸 길게 누르기", badge: "3칸 롱노트", desc: "(LLL) 베이스와 (RRR) 오른손 화음 홀드 교차", baseBpm: 78, pattern: "(LLL)RLRL-L(RRR)LRLL" },
     { level: 18, title: "Lv.18 엇박 버티기", badge: "오프비트 홀드", desc: "첫 2칸을 비우고 엇박에 들어가는 끈적한 롱노트", baseBpm: 82, pattern: "--(LL)LRLL(RR)LR-LR-" },
     { level: 19, title: "Lv.19 양손 홀드", badge: "더블 홀드", desc: "여백 뒤에 터지는 왼손 롱노트와 오른손 더블 쨉", baseBpm: 86, pattern: "--(LL)-L--(LL)RRLRRL" },
     { level: 20, title: "Lv.20 롱숏 마스터", badge: "아티큘레이션", desc: "3칸 화음 쨉과 2칸 베이스가 맞물리는 실전 펑크", baseBpm: 90, pattern: "(RRR)LR-LR-(RR)LRRL-" },
 
-    // Chapter 5 (Lv 21~25: 싱코페이션 & 쨉)
     { level: 21, title: "Lv.21 16비트 커팅", badge: "싱코페이션", desc: "1번 박 베이스 후 엇박 쨉을 쪼개는 커팅 리듬", baseBpm: 85, pattern: "LR-R-R-R-R-R-RLR" },
     { level: 22, title: "Lv.22 롱노트 & 스프린트", badge: "스프린트", desc: "베이스 홀드 후 4박에서 터지는 16비트 런", baseBpm: 89, pattern: "R(LL)R-RLR-RLLRLRL" },
     { level: 23, title: "Lv.23 치고 빠지기", badge: "텐션 조절", desc: "16비트 연타와 엇박 쨉이 쉴 새 없이 교차하는 훈련", baseBpm: 93, pattern: "RLRL-R-R-RL-RLRL" },
     { level: 24, title: "Lv.24 무한 롤링", badge: "노 브레이크", desc: "쉼표 없이 인워드와 리버스가 몰아치는 피지컬 훈련", baseBpm: 96, pattern: "RLLRLLRLLRLLRLRL" },
     { level: 25, title: "Lv.25 화음 홀드 피니시", badge: "싱코페이션 마스터", desc: "오른손 롱노트 홀드와 인워드 피니시 결합", baseBpm: 100, pattern: "L(RR)L-R-R-LR-RLLR" },
 
-    // Chapter 6 (Lv 26~30: 종합 마스터)
     { level: 26, title: "Lv.26 원코드 컴핑", badge: "소울 컴핑", desc: "1박 롱노트 베이스와 2·4박 백비트 쨉의 정석", baseBpm: 88, pattern: "(LL)L--R-R-R-LR-RL" },
     { level: 27, title: "Lv.27 톱니바퀴 그루브", badge: "오스티나토", desc: "왼손 리프와 오른손 화음이 맞물리는 인터락", baseBpm: 92, pattern: "L-RL-R-LL-RL-(RR)L" },
     { level: 28, title: "Lv.28 주고받는 잼", badge: "콜 앤 리스폰스", desc: "클라베 모티브와 롤링 릭을 주고받는 즉흥 호흡", baseBpm: 95, pattern: "R-RLLRLLR-RLL(RR)L" },
@@ -739,12 +795,14 @@
   let demoStep = 0;
   let nextDemoNoteTime = 0;
 
+  // [수정 완료] 각 챕터 1레벨(1, 6, 11, 16, 21, 26) 영구 해금 예외처리 복구
   function getLevelStars(lvlNum) {
     return parseInt(localStorage.getItem(`groove_lv_${lvlNum}_stars`)) || 0;
   }
 
   function isLevelUnlocked(lvlNum) {
-    if (lvlNum === 1) return true;
+    if (getLevelStars(lvlNum) >= 1) return true;
+    if ((lvlNum - 1) % 5 === 0) return true;
     return getLevelStars(lvlNum - 1) >= 1;
   }
 
@@ -1138,6 +1196,7 @@
     requestAnimationFrame(scheduler);
   }
 
+  // [수정 완료] 마우스, 키보드, 미디 입력을 모두 완벽히 수용하는 통합 판정 핸들러
   function handleInput(hand, clientX, clientY, isMidi = false) {
     createRipple(hand, clientX, clientY);
     if (!isRunning || !audioCtx) return;
@@ -1187,7 +1246,7 @@
     closest.offsetMs = diffMs;
     const absMs = Math.abs(diffMs);
 
-    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.22))));
+    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.20))));
 
     if (closest.isLong) {
       activeHoldingNotes[hand] = {
@@ -1197,10 +1256,10 @@
       };
     }
 
-    if (absMs <= 45) {
+    if (absMs <= 50) {
       currentCombo++;
       updateFeedback(closest.isLong ? `PERFECT HOLD! (${syncPercent}%)` : `PERFECT (${syncPercent}%)`, "var(--accent-right)");
-    } else if (absMs <= 85) {
+    } else if (absMs <= 90) {
       currentCombo++;
       updateFeedback(`GREAT (${syncPercent}%)`, "var(--accent-left)");
     } else {
@@ -1316,8 +1375,8 @@
       else if (n.hit) {
         validHits.push(n);
         const abs = Math.abs(n.offsetMs);
-        if (abs <= 45 && n.releaseErr === 'none') perfect++;
-        else if (abs <= 85) great++;
+        if (abs <= 50 && n.releaseErr === 'none') perfect++;
+        else if (abs <= 90) great++;
         else earlyLate++;
       } else miss++;
     });
@@ -1400,6 +1459,7 @@
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
+  // --- 1:1 고화질 갤러리 저장 및 공유 엔진 ([왼손오른손 리듬감 테스트] 브랜딩 반영) ---
   function shareResultCard() {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -1419,10 +1479,11 @@
     ctx.lineWidth = 12;
     ctx.strokeRect(30, 30, 1020, 1020);
 
+    // 상단 타이틀 브랜딩
     ctx.fillStyle = '#ff9f0a';
-    ctx.font = 'bold 36px sans-serif';
+    ctx.font = 'bold 38px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('GROOVE LAB : 16-BIT RUDIMENT', 540, 110);
+    ctx.fillText('왼손오른손 리듬감 테스트', 540, 110);
 
     ctx.fillStyle = '#f2f2f7';
     ctx.font = 'bold 44px sans-serif';
@@ -1497,25 +1558,47 @@
     ctx.fillStyle = '#8e8e93';
     ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('🎹 박터틀의 음악노트  |  groovelab.co.kr', 540, 990);
+    ctx.fillText('🎹 박터틀의 음악노트  |  왼손오른손 리듬감 테스트', 540, 990);
+
+    const dataUrl = canvas.toDataURL('image/png');
 
     canvas.toBlob((blob) => {
-      const file = new File([blob], `groove_lab_lv${currLvl.level}_${lastRank}.png`, { type: 'image/png' });
-      
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({
-          files: [file],
-          title: `Groove Lab ${currLvl.title} 결과`,
-          text: `16비트 루디먼트 마스터 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
-        }).catch(() => {});
+      if (blob && navigator.share && navigator.canShare) {
+        const file = new File([blob], `rhythm_test_lv${currLvl.level}.png`, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: `[왼손오른손 리듬감 테스트] ${currLvl.title} 결과`,
+            text: `왼손오른손 리듬감 테스트 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
+          }).catch(() => {
+            openSaveModal(dataUrl);
+          });
+          return;
+        }
+      }
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        openSaveModal(dataUrl);
       } else {
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `groove_lab_lv${currLvl.level}_${lastRank}.png`;
+        a.href = dataUrl;
+        a.download = `rhythm_test_lv${currLvl.level}_${lastRank}.png`;
         a.click();
-        alert("1:1 정사각형 결과 카드가 저장되었습니다! 📸");
       }
-    });
+    }, 'image/png');
+  }
+
+  function openSaveModal(dataUrl) {
+    const overlay = document.getElementById('saveModalOverlay');
+    const img = document.getElementById('savePreviewImg');
+    img.src = dataUrl;
+    overlay.style.display = 'flex';
+  }
+
+  function closeSaveModal() {
+    document.getElementById('saveModalOverlay', 'none');
+    document.getElementById('saveModalOverlay').style.display = 'none';
   }
 
   const padL = document.getElementById('padL');
@@ -1625,6 +1708,7 @@
     }
   });
 
+  // --- [완벽 복구] G2(43) / G#2(44) 기반 안정적인 미디 수신 엔진 ---
   let lastMidiAttackTime = { L: 0, R: 0 };
   const CHORD_DEBOUNCE_MS = 35;
 
@@ -1661,7 +1745,7 @@
             input.onmidimessage = handleMIDIMessage;
           }
           midiAccess.onstatechange = (e) => {
-            if (e.port.type === 'input' && e.port.state === 'connected') {
+            if (e.port && e.port.type === 'input' && e.port.state === 'connected') {
               e.port.onmidimessage = handleMIDIMessage;
             }
           };
