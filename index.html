@@ -290,7 +290,7 @@
   .feedback-box {
     text-align: center;
     min-height: 20px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
   }
 
@@ -443,7 +443,6 @@
   }
   .btn-share-card:active { transform: scale(0.98); opacity: 0.9; }
 
-  /* 갤러리 저장용 모달 */
   .save-modal-overlay {
     display: none;
     position: fixed;
@@ -618,7 +617,6 @@
   </div>
 </div>
 
-<!-- 갤러리 저장용 모달 -->
 <div class="save-modal-overlay" id="saveModalOverlay" onclick="closeSaveModal(event)">
   <div class="save-modal-card" onclick="event.stopPropagation()">
     <h3 style="font-size:15px; font-weight:800; color:var(--accent-orange);">📸 결과 카드 생성 완료</h3>
@@ -805,10 +803,6 @@
     return parseInt(localStorage.getItem(`groove_lv_${lvlNum}_stars`)) || 0;
   }
 
-  // 버그 수정: 
-  // 1) 이미 별을 1개 이상 획득한 레벨은 영구 해금
-  // 2) 각 챕터의 첫 레벨(1, 6, 11, 16, 21, 26)은 기본 해금
-  // 3) 직전 레벨을 클리어했으면 순차 해금
   function isLevelUnlocked(lvlNum) {
     if (getLevelStars(lvlNum) >= 1) return true;
     if ((lvlNum - 1) % 5 === 0) return true;
@@ -969,6 +963,9 @@
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') {
       await audioCtx.resume();
+    }
+    if (!globalMidiAccess && navigator.requestMIDIAccess) {
+      initMIDI();
     }
   }
 
@@ -1254,7 +1251,6 @@
     closest.offsetMs = diffMs;
     const absMs = Math.abs(diffMs);
 
-    // 판정 완화에 맞추어 싱크율 감산 수식 소폭 완화 (0.20)
     const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.20))));
 
     if (closest.isLong) {
@@ -1265,7 +1261,6 @@
       };
     }
 
-    // 판정 기준 5ms 관대화 적용 (45ms -> 50ms, 85ms -> 90ms)
     if (absMs <= 50) {
       currentCombo++;
       updateFeedback(closest.isLong ? `PERFECT HOLD! (${syncPercent}%)` : `PERFECT (${syncPercent}%)`, "var(--accent-right)");
@@ -1304,8 +1299,9 @@
 
   function updateFeedback(text, color) {
     const el = document.getElementById('feedbackText');
-    el.textContent = text;
-    el.style.color = color;
+    if (!el) return;
+    el.innerHTML = text;
+    if (color) el.style.color = color;
   }
 
   function updateUIProgress(current) {
@@ -1385,7 +1381,6 @@
       else if (n.hit) {
         validHits.push(n);
         const abs = Math.abs(n.offsetMs);
-        // 정산 판정 기준도 5ms 관대화 적용 (50ms, 90ms)
         if (abs <= 50 && n.releaseErr === 'none') perfect++;
         else if (abs <= 90) great++;
         else earlyLate++;
@@ -1465,12 +1460,10 @@
     document.getElementById('resultModal').style.display = 'none';
     document.getElementById('startBtn').style.display = 'flex';
     document.getElementById('sessionStatus').textContent = "대기 중 (시작 버튼 클릭)";
-    document.getElementById('feedbackText').textContent = "준비 완료 (마스터건반 ~G2:L / G#2~:R)";
-    document.getElementById('feedbackText').style.color = "var(--text-primary)";
+    refreshReadyFeedback();
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
-  // --- 1:1 고화질 갤러리 저장 및 공유 엔진 ([왼손오른손 리듬감 테스트] 브랜딩 반영) ---
   function shareResultCard() {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -1490,7 +1483,6 @@
     ctx.lineWidth = 12;
     ctx.strokeRect(30, 30, 1020, 1020);
 
-    // 상단 타이틀 브랜딩
     ctx.fillStyle = '#ff9f0a';
     ctx.font = 'bold 38px sans-serif';
     ctx.textAlign = 'center';
@@ -1718,6 +1710,9 @@
     }
   });
 
+  // --- Web MIDI 엔진 (포트 강제 개방 및 실시간 장치 감지) ---
+  let globalMidiAccess = null;
+  let activeMidiDeviceName = "";
   let lastMidiAttackTime = { L: 0, R: 0 };
   const CHORD_DEBOUNCE_MS = 35;
 
@@ -1727,14 +1722,38 @@
     return null;
   }
 
+  function refreshReadyFeedback() {
+    const fb = document.getElementById('feedbackText');
+    if (!fb || isRunning) return;
+    if (activeMidiDeviceName) {
+      fb.innerHTML = `🎹 <span style="color:var(--accent-right); font-weight:800;">MIDI 연결됨: ${activeMidiDeviceName}</span> (~G2:L / G#2~:R)`;
+      fb.style.color = "var(--text-primary)";
+    } else {
+      fb.innerHTML = "준비 완료 (마스터건반 ~G2:L / G#2~:R)";
+      fb.style.color = "var(--text-primary)";
+    }
+  }
+
   function handleMIDIMessage(event) {
-    const [status, note, velocity] = event.data;
+    if (!event.data || event.data.length < 2) return;
+    const status = event.data[0];
+    const note = event.data[1];
+    const velocity = event.data.length > 2 ? event.data[2] : 0;
     const command = status >> 4;
+
     const hand = getHandFromMIDINote(note);
     if (!hand) return;
 
     if (command === 9 && velocity > 0) {
       unlockAudioPipeline();
+
+      // 세션 시작 전에도 타건 신호 및 노트 번호 실시간 피드백
+      if (!isRunning) {
+        createRipple(hand);
+        updateFeedback(`🎹 MIDI 감지: <b>${hand}</b> (Note ${note})`, hand === 'L' ? 'var(--accent-left)' : 'var(--accent-right)');
+        return;
+      }
+
       const now = performance.now();
       if (now - lastMidiAttackTime[hand] < CHORD_DEBOUNCE_MS) {
         return;
@@ -1742,27 +1761,55 @@
       lastMidiAttackTime[hand] = now;
       handleInput(hand, null, null, true);
     } else if (command === 8 || (command === 9 && velocity === 0)) {
-      handleRelease(hand);
+      if (isRunning) {
+        handleRelease(hand);
+      }
     }
+  }
+
+  function bindMIDIDevices(midiAccess) {
+    if (!midiAccess) return;
+    globalMidiAccess = midiAccess;
+    let connected = [];
+
+    midiAccess.inputs.forEach((input) => {
+      // 포트 연결 상태 강제 open
+      if (input.open) input.open().catch(() => {});
+      input.onmidimessage = handleMIDIMessage;
+      connected.push(input.name || "MIDI 건반");
+    });
+
+    if (connected.length > 0) {
+      activeMidiDeviceName = connected[0];
+    } else {
+      activeMidiDeviceName = "";
+    }
+    refreshReadyFeedback();
   }
 
   function initMIDI() {
     if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess().then(
+      navigator.requestMIDIAccess({ sysex: false }).then(
         (midiAccess) => {
-          for (let input of midiAccess.inputs.values()) {
-            input.onmidimessage = handleMIDIMessage;
-          }
-          midiAccess.onstatechange = (e) => {
-            if (e.port.type === 'input' && e.port.state === 'connected') {
-              e.port.onmidimessage = handleMIDIMessage;
-            }
+          bindMIDIDevices(midiAccess);
+          midiAccess.onstatechange = () => {
+            bindMIDIDevices(midiAccess);
           };
         },
-        () => {
-          console.log("MIDI 접근이 거부되었거나 지원되지 않습니다.");
+        (err) => {
+          console.warn("MIDI 접근 권한 오류:", err);
+          const fb = document.getElementById('feedbackText');
+          if (fb && !isRunning) {
+            fb.innerHTML = `<span style="color:var(--accent-orange)">⚠️ MIDI 사용 시 localhost 또는 HTTPS 서버 환경에서 열어주세요.</span>`;
+          }
         }
       );
+    } else {
+      console.warn("Web MIDI 미지원 브라우저");
+      const fb = document.getElementById('feedbackText');
+      if (fb && !isRunning) {
+        fb.innerHTML = `<span style="color:var(--accent-miss)">⚠️ 이 브라우저는 Web MIDI를 지원하지 않습니다 (Chrome/Edge 권장).</span>`;
+      }
     }
   }
 
