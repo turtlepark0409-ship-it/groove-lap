@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>왼손오른손 리듬감 테스트</title>
+<title>Groove Lab - 16비트 루디먼트 마스터</title>
 <style>
   :root {
     --bg-main: #141518;
@@ -79,6 +79,7 @@
     }
   }
 
+  /* 상단 동적 팁 배너 */
   .guide-banner {
     background: rgba(255, 159, 10, 0.08);
     border: 1px solid rgba(255, 159, 10, 0.25);
@@ -290,7 +291,7 @@
   .feedback-box {
     text-align: center;
     min-height: 20px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
   }
 
@@ -442,56 +443,6 @@
     touch-action: manipulation;
   }
   .btn-share-card:active { transform: scale(0.98); opacity: 0.9; }
-
-  .save-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.88);
-    z-index: 9999;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .save-modal-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 16px;
-    max-width: 380px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .save-preview-img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    object-fit: contain;
-    user-select: auto;
-    -webkit-user-select: auto;
-  }
-  .save-modal-guide {
-    font-size: 12.5px;
-    color: #ffc266;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-  .btn-close-modal {
-    background: #2b2d38;
-    color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-  }
 </style>
 </head>
 <body>
@@ -612,19 +563,8 @@
     <div class="result-btn-group">
       <button class="btn-secondary" onclick="retryLevel()">🔄 다시 연습하기</button>
       <button class="btn-main" id="nextLevelBtn" onclick="nextLevel()">⏭️ 다음 레벨로</button>
-      <button class="btn-share-card" onclick="shareResultCard()">📸 갤러리에 저장하기</button>
+      <button class="btn-share-card" onclick="shareResultCard()">📸 이미지로 저장하기</button>
     </div>
-  </div>
-</div>
-
-<div class="save-modal-overlay" id="saveModalOverlay" onclick="closeSaveModal(event)">
-  <div class="save-modal-card" onclick="event.stopPropagation()">
-    <h3 style="font-size:15px; font-weight:800; color:var(--accent-orange);">📸 결과 카드 생성 완료</h3>
-    <img id="savePreviewImg" class="save-preview-img" alt="Result Card">
-    <p class="save-modal-guide">
-      👉 이미지를 <b>길게(꾹) 눌러서 [사진에 저장] 또는 [이미지 저장]</b>을 누르면 갤러리에 저장됩니다!
-    </p>
-    <button class="btn-close-modal" onclick="closeSaveModal()">닫기</button>
   </div>
 </div>
 
@@ -804,8 +744,7 @@
   }
 
   function isLevelUnlocked(lvlNum) {
-    if (getLevelStars(lvlNum) >= 1) return true;
-    if ((lvlNum - 1) % 5 === 0) return true;
+    if (lvlNum === 1) return true;
     return getLevelStars(lvlNum - 1) >= 1;
   }
 
@@ -963,9 +902,6 @@
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') {
       await audioCtx.resume();
-    }
-    if (!globalMidiAccess && navigator.requestMIDIAccess) {
-      initMIDI();
     }
   }
 
@@ -1251,7 +1187,7 @@
     closest.offsetMs = diffMs;
     const absMs = Math.abs(diffMs);
 
-    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.20))));
+    const syncPercent = Math.max(55, Math.min(100, Math.round(100 - (absMs * 0.22))));
 
     if (closest.isLong) {
       activeHoldingNotes[hand] = {
@@ -1261,10 +1197,10 @@
       };
     }
 
-    if (absMs <= 50) {
+    if (absMs <= 45) {
       currentCombo++;
       updateFeedback(closest.isLong ? `PERFECT HOLD! (${syncPercent}%)` : `PERFECT (${syncPercent}%)`, "var(--accent-right)");
-    } else if (absMs <= 90) {
+    } else if (absMs <= 85) {
       currentCombo++;
       updateFeedback(`GREAT (${syncPercent}%)`, "var(--accent-left)");
     } else {
@@ -1299,9 +1235,8 @@
 
   function updateFeedback(text, color) {
     const el = document.getElementById('feedbackText');
-    if (!el) return;
-    el.innerHTML = text;
-    if (color) el.style.color = color;
+    el.textContent = text;
+    el.style.color = color;
   }
 
   function updateUIProgress(current) {
@@ -1381,8 +1316,8 @@
       else if (n.hit) {
         validHits.push(n);
         const abs = Math.abs(n.offsetMs);
-        if (abs <= 50 && n.releaseErr === 'none') perfect++;
-        else if (abs <= 90) great++;
+        if (abs <= 45 && n.releaseErr === 'none') perfect++;
+        else if (abs <= 85) great++;
         else earlyLate++;
       } else miss++;
     });
@@ -1460,7 +1395,8 @@
     document.getElementById('resultModal').style.display = 'none';
     document.getElementById('startBtn').style.display = 'flex';
     document.getElementById('sessionStatus').textContent = "대기 중 (시작 버튼 클릭)";
-    refreshReadyFeedback();
+    document.getElementById('feedbackText').textContent = "준비 완료 (마스터건반 ~G2:L / G#2~:R)";
+    document.getElementById('feedbackText').style.color = "var(--text-primary)";
     document.querySelectorAll('.step-node').forEach(n => n.classList.remove('active'));
   }
 
@@ -1484,9 +1420,9 @@
     ctx.strokeRect(30, 30, 1020, 1020);
 
     ctx.fillStyle = '#ff9f0a';
-    ctx.font = 'bold 38px sans-serif';
+    ctx.font = 'bold 36px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('왼손오른손 리듬감 테스트', 540, 110);
+    ctx.fillText('GROOVE LAB : 16-BIT RUDIMENT', 540, 110);
 
     ctx.fillStyle = '#f2f2f7';
     ctx.font = 'bold 44px sans-serif';
@@ -1561,46 +1497,25 @@
     ctx.fillStyle = '#8e8e93';
     ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('🎹 박터틀의 음악노트  |  왼손오른손 리듬감 테스트', 540, 990);
-
-    const dataUrl = canvas.toDataURL('image/png');
+    ctx.fillText('🎹 박터틀의 음악노트  |  groovelab.co.kr', 540, 990);
 
     canvas.toBlob((blob) => {
-      if (blob && navigator.share && navigator.canShare) {
-        const file = new File([blob], `rhythm_test_lv${currLvl.level}.png`, { type: 'image/png' });
-        if (navigator.canShare({ files: [file] })) {
-          navigator.share({
-            files: [file],
-            title: `[왼손오른손 리듬감 테스트] ${currLvl.title} 결과`,
-            text: `왼손오른손 리듬감 테스트 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
-          }).catch(() => {
-            openSaveModal(dataUrl);
-          });
-          return;
-        }
-      }
-
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        openSaveModal(dataUrl);
+      const file = new File([blob], `groove_lab_lv${currLvl.level}_${lastRank}.png`, { type: 'image/png' });
+      
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: `Groove Lab ${currLvl.title} 결과`,
+          text: `16비트 루디먼트 마스터 랭크: ${lastRank} (${lastAcc.toFixed(1)}% 싱크)`
+        }).catch(() => {});
       } else {
         const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = `rhythm_test_lv${currLvl.level}_${lastRank}.png`;
+        a.href = URL.createObjectURL(blob);
+        a.download = `groove_lab_lv${currLvl.level}_${lastRank}.png`;
         a.click();
+        alert("1:1 정사각형 결과 카드가 저장되었습니다! 📸");
       }
-    }, 'image/png');
-  }
-
-  function openSaveModal(dataUrl) {
-    const overlay = document.getElementById('saveModalOverlay');
-    const img = document.getElementById('savePreviewImg');
-    img.src = dataUrl;
-    overlay.style.display = 'flex';
-  }
-
-  function closeSaveModal() {
-    document.getElementById('saveModalOverlay').style.display = 'none';
+    });
   }
 
   const padL = document.getElementById('padL');
@@ -1710,9 +1625,6 @@
     }
   });
 
-  // --- Web MIDI 엔진 (포트 강제 개방 및 실시간 장치 감지) ---
-  let globalMidiAccess = null;
-  let activeMidiDeviceName = "";
   let lastMidiAttackTime = { L: 0, R: 0 };
   const CHORD_DEBOUNCE_MS = 35;
 
@@ -1722,38 +1634,14 @@
     return null;
   }
 
-  function refreshReadyFeedback() {
-    const fb = document.getElementById('feedbackText');
-    if (!fb || isRunning) return;
-    if (activeMidiDeviceName) {
-      fb.innerHTML = `🎹 <span style="color:var(--accent-right); font-weight:800;">MIDI 연결됨: ${activeMidiDeviceName}</span> (~G2:L / G#2~:R)`;
-      fb.style.color = "var(--text-primary)";
-    } else {
-      fb.innerHTML = "준비 완료 (마스터건반 ~G2:L / G#2~:R)";
-      fb.style.color = "var(--text-primary)";
-    }
-  }
-
   function handleMIDIMessage(event) {
-    if (!event.data || event.data.length < 2) return;
-    const status = event.data[0];
-    const note = event.data[1];
-    const velocity = event.data.length > 2 ? event.data[2] : 0;
+    const [status, note, velocity] = event.data;
     const command = status >> 4;
-
     const hand = getHandFromMIDINote(note);
     if (!hand) return;
 
     if (command === 9 && velocity > 0) {
       unlockAudioPipeline();
-
-      // 세션 시작 전에도 타건 신호 및 노트 번호 실시간 피드백
-      if (!isRunning) {
-        createRipple(hand);
-        updateFeedback(`🎹 MIDI 감지: <b>${hand}</b> (Note ${note})`, hand === 'L' ? 'var(--accent-left)' : 'var(--accent-right)');
-        return;
-      }
-
       const now = performance.now();
       if (now - lastMidiAttackTime[hand] < CHORD_DEBOUNCE_MS) {
         return;
@@ -1761,55 +1649,27 @@
       lastMidiAttackTime[hand] = now;
       handleInput(hand, null, null, true);
     } else if (command === 8 || (command === 9 && velocity === 0)) {
-      if (isRunning) {
-        handleRelease(hand);
-      }
+      handleRelease(hand);
     }
-  }
-
-  function bindMIDIDevices(midiAccess) {
-    if (!midiAccess) return;
-    globalMidiAccess = midiAccess;
-    let connected = [];
-
-    midiAccess.inputs.forEach((input) => {
-      // 포트 연결 상태 강제 open
-      if (input.open) input.open().catch(() => {});
-      input.onmidimessage = handleMIDIMessage;
-      connected.push(input.name || "MIDI 건반");
-    });
-
-    if (connected.length > 0) {
-      activeMidiDeviceName = connected[0];
-    } else {
-      activeMidiDeviceName = "";
-    }
-    refreshReadyFeedback();
   }
 
   function initMIDI() {
     if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess({ sysex: false }).then(
+      navigator.requestMIDIAccess().then(
         (midiAccess) => {
-          bindMIDIDevices(midiAccess);
-          midiAccess.onstatechange = () => {
-            bindMIDIDevices(midiAccess);
+          for (let input of midiAccess.inputs.values()) {
+            input.onmidimessage = handleMIDIMessage;
+          }
+          midiAccess.onstatechange = (e) => {
+            if (e.port.type === 'input' && e.port.state === 'connected') {
+              e.port.onmidimessage = handleMIDIMessage;
+            }
           };
         },
-        (err) => {
-          console.warn("MIDI 접근 권한 오류:", err);
-          const fb = document.getElementById('feedbackText');
-          if (fb && !isRunning) {
-            fb.innerHTML = `<span style="color:var(--accent-orange)">⚠️ MIDI 사용 시 localhost 또는 HTTPS 서버 환경에서 열어주세요.</span>`;
-          }
+        () => {
+          console.log("MIDI 접근이 거부되었거나 지원되지 않습니다.");
         }
       );
-    } else {
-      console.warn("Web MIDI 미지원 브라우저");
-      const fb = document.getElementById('feedbackText');
-      if (fb && !isRunning) {
-        fb.innerHTML = `<span style="color:var(--accent-miss)">⚠️ 이 브라우저는 Web MIDI를 지원하지 않습니다 (Chrome/Edge 권장).</span>`;
-      }
     }
   }
 
